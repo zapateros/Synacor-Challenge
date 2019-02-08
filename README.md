@@ -70,4 +70,4 @@ Here all the different functions are set. The *insert_rel* function is already e
 **4. Run the vm**<br /> 
 This is the part where you start the virtual machine and in the next chapters add (automated) user inputs.
 
-When you run the whole script, it is executing a self-test, where it checks if every Opcode is implemented correctly. If so, it continues to write a message and waits for user input. Now the fun really starts. And above all, you have now earned the third code! (3/8). 
+When you run the whole script, it is executing a self-test, where it checks if every Opcode is implemented correctly. If so, it continues to write a message and waits for user input. Also, you have now earned the third code! (3/8).
