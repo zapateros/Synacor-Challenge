@@ -19,9 +19,9 @@ file_name <- "challenge.bin"
 info      <- file.info(file_name)
 lbe       <- readBin(file_name, integer(), size = 2, n = info$size, endian = "little", signed = FALSE)
 ```
-The numbers 0 to 32767 are read as a literal value. The numbers 32768 to 32775 are read as registers 1 to 8. For the observant viewers: the instruction manual states registers 0 to 7. **R-objects start at index 1, where many other languages start at index 0.** lbe[1] in R is the first value of vector lbe, while in python lbe[1] is the second value of the vector. This makes it a bit more difficult to follow the steps sometimes, as you always have to keep this in mind when applying instructions. The registers are a storage for 8 integers. There is another storage, but this one is unbound: the stack. These two storages, combined with the vector of values and the Opcodes are all the ingredients for completing this challenge. 
+The numbers 0 to 32767 are read as a literal value. The numbers 32768 to 32775 are read as registers 1 to 8. For the observant readers: the instruction manual states registers 0 to 7. **R-objects start at index 1, where many other languages start at index 0.** lbe[1] in R is the first value of vector *lbe*, while in python lbe[1] is the second value of the vector. This makes it a bit more difficult to follow the steps sometimes, as you always have to keep this in mind when applying instructions. The registers are a storage for 8 integers. There is another storage, but this one is unbound: the stack. These two storages, combined with the vector of values (*lbe*) and the Opcodes are all the ingredients for completing this challenge. 
 
-> Basically you are looping through the vector of values (lbe), which point to what Opcode to run, which on its turn change values of the registers, add or remove values from the stack, change certain values of lbe, output text or make you jump to certain indexes of lbe.
+> Basically you are looping through the vector of values (*lbe*), which point to what Opcode to run, which on its turn change values of the registers, add or remove values from the stack, change certain values of *lbe*, output text or make you jump to certain indexes of *lbe*.
 
 This is really all it is. But I can imagine this doesn't really make sense at this point. After you finish the challenge, read this statement again and I'm sure it will. 
 
@@ -31,9 +31,9 @@ The *second step* is to implement Opcode 0, 19 and 21, as stated in the instruct
 |---|---|---|---|---|---|---|---|
 |lbe | 21 | 21 | 19 | 87 | 19 | 101 | 19 |
 
-You start with the first value of lbe (i=1, lbe[i]), which is 21. This means the virtual machine (vm) runs Opcode 21, which is actually no operation. So the only thing changing here is that i is set to 2 (i <<- i + 1). It is a double arrow because it is an operation inside a function. When using just a single arrow, the incremented i only exists inside the function. Now the second number of lbe, lbe[2] also is 21 and the vm repeats Opcode 21 and sets i to 3. The third one is where it becomes interesting: lbe[3] = 19, which means the vm should display the ascii character represented by the number on the next i: lbe[4] = 87. This is a "W". Also i is incremented two times, so now i = 5. lbe[5] is also 19 and so on. Now a text message appears, containing the second code! (2/8). Go to [chapter_2.R](https://github.com/zapateros/Synacor-Challenge/blob/master/R/chapter_2.R)
+You start with the first value of *lbe* (i=1, lbe[i]), which is 21. This means the virtual machine (*vm*) runs Opcode 21, which is actually no operation. So the only thing changing here is that i is set to 2 (i <<- i + 1). It is a double arrow because it is an operation inside a function. When using just a single arrow, the incremented i only exists inside the function. Now the second number of *lbe*, lbe[2] also is 21 and the vm repeats Opcode 21 and sets i to 3. The third one is where it becomes interesting: lbe[3] = 19, which means the *vm* should display the ascii character represented by the number on the next i: lbe[4] = 87. This is a "W". Also i is incremented two times, so now i = 5. lbe[5] is also 19 and so on. Now a text message appears, containing the second code! (2/8). Go to [chapter_2.R](https://github.com/zapateros/Synacor-Challenge/blob/master/R/chapter_2.R)
 
-In my code I added a function called 'insert_rel', which is run every iteration before every Opcode:
+In my code I added a function called '*insert_rel*', which is run every iteration before every Opcode:
 ```
 insert_rel <- function(){
   rel_lbe      <<- lbe[i:(i+3)]
@@ -46,8 +46,7 @@ insert_rel <- function(){
   }
 }
 ```
-The reason I use this function is because values of lbe larger than 32767 are read as either the value of a register or the number of the register itself. Instead of changing the complete vector to the relevant values, I just take the values from index i to i+3, as these include the relevant values, used in all Opcodes. It makes the code a little bit less readable, but increases the performance quite a bit. The function creates a vector reg_nums, where, - if present - the register number is stored, and a vector reg_vals, where the actual value of the relevant register is stored. For example: if rel_lbe = c(12, 39, 32769, 30), then reg_nums = c(12, 39, 2, 30) and reg_vals = c(12, 39, 1000, 30) if the second register contains the value 1000. Now the Opcode uses either reg_vals or reg_nums for its instruction, depending on what action to take of course. 
+The reason I use this function is because values of *lbe* larger than 32767 are read as either the value of a register or the number of the register itself. Instead of changing the complete vector to the relevant values, I just take the values from index i to i+3, as these include the relevant values, used in all Opcodes. It makes the code a little bit less readable, but increases the performance quite a bit. The function creates a vector *reg_nums*, where, - if present - the register number is stored, and a vector *reg_vals*, where the actual value of the relevant register is stored. For example: if rel_lbe = c(12, 39, 32769, 30), then reg_nums = c(12, 39, 2, 30) and reg_vals = c(12, 39, 1000, 30) if the second register contains the value 1000. Now the Opcode uses either *reg_vals* or *reg_nums* for its instruction, depending on what action to take of course. 
 
-This function extracts the values of lbe[i] to lbe[i+3], because these are the relevant values the vm uses for 
 
 ## Chapter 3:
