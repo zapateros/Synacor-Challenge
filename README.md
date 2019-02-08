@@ -54,7 +54,8 @@ To earn the third code you have to implement all Opcodes, but 20. Now [the scrip
 1. Initialize
 2. Opcodes
 3. Functions
-4. Run the vm <br /> <br /> 
+4. Run the vm 
+<br />
 **1. Initialize**
 As the title says, here is where the script initializes all objects. At this point the registers (*regs*) and the stack are added. <br /> <br /> 
 **2. Opcodes**<br /> 
