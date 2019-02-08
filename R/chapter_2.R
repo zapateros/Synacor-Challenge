@@ -1,11 +1,26 @@
 setwd("C:/Users/paul/Documents/R-projects/Synacor-Challenge")
 
-# Initialize
+# 1. INITIALIZE
 file_name <- "challenge.bin"
 info      <- file.info(file_name)
 lbe       <- readBin(file_name, integer(), size = 2, n = info$size, endian = "little", signed = FALSE)
 i         <- 1
 
+
+# 2. OPCODES
+# 19. write the character represented by ascii code <a> to the terminal
+out <- function(){ 
+  cat(rawToChar(as.raw(reg_vals[2]))) 
+  i <<- i + 2
+}
+
+# 21. no operation
+noop <- function(){
+  i <<- i + 1
+}
+
+
+# 3. FUNCTIONS
 # take relevant numbers from i and change to register values if larger than 32767
 insert_rel <- function(){
   rel_lbe      <<- lbe[i:(i+3)]
@@ -16,17 +31,6 @@ insert_rel <- function(){
     reg_nums[larger] <<- rel_lbe[larger] - 32767
     reg_vals[larger] <<- regs[reg_nums[larger]]
   }
-}
-
-# 19. write the character represented by ascii code <a> to the terminal
-out <- function(){ 
-  cat(rawToChar(as.raw(reg_vals[2]))) 
-  i <<- i + 2
-}
-
-# 21. no operation
-noop <- function(){
-  i <<- i + 1
 }
 
 # run the virtual machine
