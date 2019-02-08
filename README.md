@@ -49,7 +49,7 @@ insert_rel <- function(){
 The reason I use this function is because values of *lbe* larger than 32767 are read as either the value of a register or the number of the register itself. Instead of changing the complete vector to the relevant values, I just take the values from index i to i + 3, as these include the relevant values, used in all Opcodes. It makes the code a little bit less readable, but increases the performance quite a bit. The function creates a vector *reg_nums*, where, - if present - the register number is stored, and a vector *reg_vals*, where the actual value of the relevant register is stored. For example: if ```rel_lbe = c(12, 39, 32769, 30)```, then ```reg_nums = c(12, 39, 2, 30)``` and ```reg_vals = c(12, 39, 1000, 30)``` if the second register contains the value 1000. Now the Opcode uses either *reg_vals* or *reg_nums* for its instruction, depending on what action to take of course. 
 
 
-## Chapter 3:
+## Chapter 3: The structure
 To earn the third code you have to implement all Opcodes, but 20. Now [the script](https://github.com/zapateros/Synacor-Challenge/blob/master/R/chapter_3.R) becomes more and more complete, it is time to look at the structure and methods I'm using. There are four parts:
 1. Initialize
 2. Opcodes
@@ -70,3 +70,4 @@ Here all the different functions are set. The *insert_rel* function is already e
 **4. Run the vm**<br /> 
 This is the part where you start the virtual machine and in the next chapters add (automated) user inputs.
 
+When you run the whole script, it is executing a self-test, where it checks if every Opcode is implemented correctly. If so, it continues to write a message and waits for user input. Now the fun really starts. And above all, you have now earned the third code! (3/8). 
