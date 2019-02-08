@@ -1,1 +1,1 @@
-setwd("C:/Users/paul/Documents/R-projects/Synacor-Challenge")
+# There is no R code needed to find the first code
