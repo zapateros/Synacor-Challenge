@@ -56,11 +56,11 @@ To earn the third code you have to implement all Opcodes, but 20. Now [the scrip
 3. Functions
 4. Run the vm 
 
-**1. Initialize**
+**1. Initialize**<br /> 
 As the title says, here is where the script initializes all objects. At this point the registers (*regs*) and the stack are added. <br /> <br /> 
 **2. Opcodes**<br /> 
 Here the Opcodes are set. Every Opcode is a seperate function which can be called by the virtual machine. These functions are then added to a list, called *op_functions*:
-```
+```R
 op_functions <- c(set, push, pop, eq, gt, jmp, jt, jf, add, mult, mod, and, or, not, 
                   rmem, wmem, call, ret, out, opin, noop)
 ```
