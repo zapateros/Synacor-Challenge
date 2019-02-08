@@ -1,3 +1,5 @@
+setwd("C:/Users/paul/Documents/R-projects/Synacor-Challenge")
+
 # 1. INITIALIZE
 file_name <- "challenge.bin"
 info      <- file.info(file_name)
@@ -179,6 +181,7 @@ insert_rel <- function(){
   }
 }
 
+
 # function to run the virtual machine
 run_vm <- function(){
     while(TRUE){
@@ -194,6 +197,5 @@ run_vm <- function(){
     }
 }
 
+# 4. RUN THE VM
 run_vm()
-
-
