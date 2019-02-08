@@ -65,7 +65,7 @@ op_functions <- c(set, push, pop, eq, gt, jmp, jt, jf, add, mult, mod, and, or, 
 ```
 A specific Opcode is then called by writing ```op_functions[[x]]()``` with x the number of the opcode. This method allows us to write the script clear and concise. 
 ##### 3. Functions
-Here all the different functions are set. The *insert_rel* function is already explained above. However, it is the next function that is the heart of the script: *run_vm*. This is the function that runs the virtual machine. It is just a continious while-loop, until a certain Opcode is met. For Opcode 0 the script stops, probably as a result of a faulty code. When arriving at Opcode 20, it asks for a user-input. This will be treated in the next chapter. 
-##### 4. Run the vm
+Here all the different functions are set. The *insert_rel* function is already explained above. However, it is the next function that is the heart of the script: *run_vm*. This is the function that runs the virtual machine. It is just a continious while-loop, until a certain Opcode is met. For Opcode 0 the script stops, probably as a result of a faulty code. When arriving at Opcode 20, it asks for a user-input. This will be treated in the next chapter.\ 
+**4. Run the vm**
 This is the part where you start the virtual machine and in the next chapters add (automated) user inputs.
 
