@@ -33,9 +33,4 @@ The *second step* is to implement Opcode 0, 19 and 21, as stated in the instruct
 
 You start with the first value of lbe (i=1, lbe[i]), which is 21. This means the virtual machine (vm) runs Opcode 21, which is actually no operation. So the only thing changing here is that i is set to 2 (i <<- i + 1). It is a double arrow because it is an operation inside a function. When using just a single arrow, the incremented i only exists inside the function. Now the second number of lbe, lbe[2] also is 21 and the vm repeats Opcode 21 and sets i to 3. The third one is where it becomes interesting: lbe[3] = 19, which means the vm should display the ascii character represented by the number on the next i: lbe[4] = 87. This is a "W". Also i is incremented two times, so now i = 5. lbe[5] is also 19 and so on. Now a text message appears, containing the second code! (2/8). 
 
- 
-| Tables        | Are           | Cool  |
-| ------------- |:-------------:| -----:|
-| col 3 is      | right-aligned | $1600 |
-| col 2 is      | centered      |   $12 |
-| zebra stripes | are neat      |    $1 |
+## Chapter 3:
