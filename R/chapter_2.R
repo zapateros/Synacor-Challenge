@@ -1,5 +1,3 @@
-setwd("C:/Users/paul/Documents/R-projects/Synacor-Challenge")
-
 # 1. INITIALIZE
 file_name <- "challenge.bin"
 info      <- file.info(file_name)
