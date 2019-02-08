@@ -9,5 +9,5 @@ After completing Advent of Code 2018, I was looking for the next challenge when 
 
 I'm writing this readme as a manual, or at least how I solved the problems, but I will probably transfer it to a website someday. I completed the challenge completely in R, but there are some calculations which could be sped up with python or even faster with C# (from 15 minutes to 15 seconds). The manual contains 8 chapters, one for each code obviously. In the map 'R' the script is given per chapter/code. In other words, if you want to cheat on a job interview assignment where this challenge is used, just run every consecutive seperate R-script and fill in the resulted code at the synacor website to see your progress. 
 
-#Chapter 1
+# Chapter 1
 
