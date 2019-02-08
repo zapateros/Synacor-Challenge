@@ -13,7 +13,11 @@ I'm writing this readme as a manual/blog, or at least how I solved the problems,
 Finding the first code is easy. Just download the files from the website (the given link). The file 'arch-spec' contains the instructions to get you going and 'challenge.bin' obviously is the input binary file. The first file also contains your first code (1/8). Now you can't stop anymore.
 
 ## Chapter 2: Little endian
-Your first step is to convert the binary file to a vector of readable numbers (for us). Each number is composed of a 16-bit litle-endian pair, which basically means that every 16 bits (or two bytes of 8 bits each) represent a number. The term little-endian pair means that the first byte (read from left to right) is the small one, and so the second the large one. Each byte is read from right to left by standard means, so 01010110 is equivalent to 0 + 64 + 0 + 16 + 0 + 4 + 2 + 0 = 86. If this byte is the second of the pair, it has to be multiplied by 256 (or shifted by 8 bits). Now you have to add the first and the second number to get the resulting number of the little-endian pair. This results in a vector of 30050 numbers from 0 to 32775.
-
+Your first step is to convert the binary file to a vector of readable integers (for us). Each integer is composed of a 16-bit litle-endian pair, which basically means that every 16 bits (or two bytes of 8 bits each) represent an integer. The term little-endian pair means that the first byte (read from left to right) is the small one, and so the second the large one. Each byte is read from right to left by standard means, so 01010110 is equivalent to 0 + 64 + 0 + 16 + 0 + 4 + 2 + 0 = 86. If this byte is the second of the pair, it has to be multiplied by 256 (or shifted by 8 bits). Now you have to add the first and the second integer to get the resulting integer of the little-endian pair. This results in a vector of 30050 integers from 0 to 32775. The R-code that does this is given below:
+...
+file_name <- "challenge.bin"
+info      <- file.info(file_name)
+lbe       <- readBin(file_name, integer(), size = 2, n = info$size, endian = "little", signed = FALSE)
+...
 
 
