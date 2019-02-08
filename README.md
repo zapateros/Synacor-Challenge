@@ -20,8 +20,10 @@ info      <- file.info(file_name)
 lbe       <- readBin(file_name, integer(), size = 2, n = info$size, endian = "little", signed = FALSE)
 ```
 The numbers 0 to 32767 are read as a literal value. The numbers 32768 to 32775 are read as registers 1 to 8. For the observant viewers: the instruction manual states registers 0 to 7. **R-objects start at index 1, where many other languages start at index 0.** lbe[1] in R is the first value of vector lbe, while in python lbe[1] is the second value of the vector. This makes it a bit more difficult to follow the steps sometimes, as you always have to keep this in mind when applying instructions. The registers are a storage for 8 integers. There is another storage, but this one is unbound: the stack. These two storages, combined with the vector of values and the Opcodes are all the ingredients for completing this challenge. 
-> Basically you are looping through the vector of values (lbe), which point to what Opcode to run, which on its turn change values of the registers, add or remove values from the stack, change certain values lbe, output text or make you jump to certain indexes of lbe.
 
+> Basically you are looping through the vector of values (lbe), which point to what Opcode to run, which on its turn change values of the registers, add or remove values from the stack, change certain values of lbe, output text or make you jump to certain indexes of lbe.
+
+This is really all it is. But I can imagine this doesn't really make sense at this point. After you finish the challenge, read this statement again and I'm sure it makes sense now. 
 
 The second step is to implement Opcode 0, 19 and 21, as stated in the instructions. I'm writing every Opcode as a function, which can be called when needed. All the relevant Opcodes are given in the R-scripts or in the 'arch-spec'-file. The latter also contains an example of  
 
