@@ -26,7 +26,7 @@ The numbers 0 to 32767 are read as a literal value. The numbers 32768 to 32775 a
 This is really all it is. But I can imagine this doesn't really make sense at this point. After you finish the challenge, read this statement again and I'm sure it will. 
 
 The *second step* is to implement Opcode 0, 19 and 21, as stated in the instructions. I'm writing every Opcode as a function, which can be called when needed. All the relevant Opcodes are given in the R-scripts or in the 'arch-spec'-file. The latter also contains an example of how to read the numbers of the vector lbe and what actions should follow. I'm walking you through the very first steps, just for (hopefully) some clarity. 
-
+<br/>
 
 |i   | 1 | 2 | 3 | 4 | 5 | 6 | 7|
 |---|---|---|---|---|---|---|---|
