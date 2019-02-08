@@ -27,11 +27,12 @@ This is really all it is. But I can imagine this doesn't really make sense at th
 
 The *second step* is to implement Opcode 0, 19 and 21, as stated in the instructions. I'm writing every Opcode as a function, which can be called when needed. All the relevant Opcodes are given in the R-scripts or in the 'arch-spec'-file. The latter also contains an example of how to read the numbers of the vector lbe and what actions should follow. I'm walking you through the very first steps, just for (hopefully) some clarity. 
 <br/>
-<br/>
+
 |i   | 1 | 2 | 3 | 4 | 5 | 6 | 7|
 |---|---|---|---|---|---|---|---|
 |lbe | 21 | 21 | 19 | 87 | 19 | 101 | 19 |
-\
+
+
 \
 
 You start with the first value of lbe (i=1, lbe[i]), which is 21. This means the virtual machine (vm) runs Opcode 21, which is actually no operation. So the only thing changing here is that i is set to 2 (i <<- i + 1). It is a double arrow because it is an operation inside a function. When using just a single arrow, the incremented i only exists inside the function. Now the second number of lbe, lbe[2] also is 21 and the vm repeats Opcode 21 and sets i to 3. The third one is where it becomes interesting: lbe[3] = 19, which means the vm should display the ascii character represented by the number on the next i: lbe[4] = 87. This is a "W". Also i is incremented two times, so now i = 5. lbe[5] is also 19 and so on. Now a text message appears, containing the second code! (2/8). [Go to R-script](https://github.com/zapateros/Synacor-Challenge/blob/master/R/chapter_2.R)
