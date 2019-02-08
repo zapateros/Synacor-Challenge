@@ -12,7 +12,7 @@ I'm writing this readme as a manual/blog, or at least how I solved the problems,
 ## Chapter 1: A jump start
 Finding the first code is easy. Just download the files from the website (the given link). The file 'arch-spec' contains the instructions to get you going and 'challenge.bin' obviously is the input binary file. The first file also contains your first code (1/8). Now you can't stop anymore.
 
-## Chapter 2: Little endian
+## Chapter 2: Little-endian pairs
 Your *first step* is to convert the binary file to a vector of readable numbers (for us). Each number is composed of a 16-bit litle-endian pair, which basically means that every 16 bits (or two bytes of 8 bits each) represent an integer. The term little-endian pair means that the first byte (read from left to right) is the small one, and so the second the large one. Each byte is read from right to left by standard means, so 01010110 is equivalent to ```0 + 64 + 0 + 16 + 0 + 4 + 2 + 0 = 86```. If this byte is the second of the pair, it has to be multiplied by 256 (or shifted by 8 bits). Now you have to add the first and the second integer to get the resulting integer of the little-endian pair. This results in a vector of 30050 integers from 0 to 32775. The R-code doing this is given below:
 ```R
 file_name <- "challenge.bin"
@@ -50,3 +50,10 @@ The reason I use this function is because values of *lbe* larger than 32767 are 
 
 
 ## Chapter 3:
+To earn the third code you have to implement all Opcodes, but 20. Now [the script](https://github.com/zapateros/Synacor-Challenge/blob/master/R/chapter_3.R) becomes more and more complete, it is time to look at the methods I'm using. you see four parts:
+1. Initialize
+2. Opcodes
+3. Functions
+4. Run the vm
+
+
