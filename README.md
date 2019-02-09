@@ -64,10 +64,13 @@ Here the Opcodes are set. Every Opcode is a seperate function which can be calle
 op_functions <- c(set, push, pop, eq, gt, jmp, jt, jf, add, mult, mod, and, or, not, 
                   rmem, wmem, call, ret, out, opin, noop)
 ```
-A specific Opcode is then called by writing ```op_functions[[x]]()``` with x the number of the opcode. This method allows us to write the script clear and concise. <br /> <br /> 
+A specific Opcode is then called by ```op_functions[[x]]()``` with x the number of the Opcode. This method allows us to write the script clear and concise. <br /> <br /> 
 **3. Functions**<br /> 
 Here all the different functions are set. The *insert_rel* function is already explained above. However, it is the next function that is the heart of the script: *run_vm*. This is the function that runs the virtual machine. It is just a continious while-loop, until a certain Opcode is met. For Opcode 0 the script stops, probably as a result of a faulty code. When arriving at Opcode 20, it asks for a user-input. This will be treated in the next chapter.<br /> <br /> 
 **4. Run the vm**<br /> 
-This is the part where you start the virtual machine and in the next chapters add (automated) user inputs.
+This is the part where you start the virtual machine and, in the next chapters, add (automated) user inputs.
 
 When you run the whole script, it is executing a self-test, where it checks if every Opcode is implemented correctly. If so, it continues to write a message and waits for user input. Also, you have now earned the third code! (3/8).
+
+## Chapter 4: A written adventure
+Up until this point it was mostly just implementing instructions but here the real fun begins. You have to implement user-input to play a text-based adventure game. Every character you write should be converted to its ascii-code. The  
