@@ -73,17 +73,21 @@ This is the part where you start the virtual machine and, in the next chapters, 
 When you run the whole script, it is executing a self-test, where it checks if every Opcode is implemented correctly. If so, it continues to write a message and waits for user input. Also, you have now earned the third code! (3/8).
 
 ## Chapter 4: A written adventure
-Up until this point it was mostly just implementing instructions but here the real fun begins. You have to implement user-input to play a text-based adventure game. Every character you write should be converted to its ascii-code. There are a couple of ways to do this, but I tried two:
-- readLine function
-- custom function
-
-I chose to make a (simple) custom function because using the readLine function during a while loop is asking for trouble in my opinion. Of course it is a matter of choice but my method also allowes us to run several concecutive inputs at once. If you want to use the readLine function, you could use something like this and use *u_input* in your Opcode 20:
+Up until this point it was mostly just implementing instructions but here the real fun begins. You have to implement user-input to play a text-based adventure game. Every character you write should be converted to its decimal ascii-code. One possibility is to use the standard 'readLine'-function but in my opinion, using this during a while-loop is asking for trouble. Instead I wrote a simple custom function, that could be used when the while-loop is ended/stopped. Therefore troubleshooting is easier and it also allowes us to write multiple inputs at once with just a slight modification. This will be treated in chapter 5 because the 4th code is within reach. When Opcode 20 is finally reached, and therefore waits for a user-input, the virtual machine stops. Now you have to call the function 'go' to make your choice:
 ```R
-user_input <- function()
-{ 
-  n <- readline(prompt="Enter your choice: ")
-  u_input <<- as.character(n)
-  
+go <- function(input){
+  for(j in unlist(strsplit(input,""))){
+    nm <- charToRaw(j)
+    regs[reg_nums[2]] <<- as.numeric(nm)
+    i <<- i + 2
+    run_vm()
+  }
+  regs[reg_nums[2]] <<- as.numeric(charToRaw("\n"))
+  i <<- i + 2
+  run_vm()
 }
 ```
-The met
+Basically what you are doing is call Opcode 20 manually, with your choice as the input. The function splits your input (string) and loops through the separate characters. Every character is converted to its decimal ascii code and the virtual machine is started again. To find the next code is very simple. Just pick the tablet up and open it with the following commands:
+- go("take tablet")
+- go("use tablet")
+And there it is, code 4/8! 
