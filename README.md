@@ -76,7 +76,8 @@ When you run the whole script, it is executing a self-test, where it checks if e
 Up until this point it was mostly just implementing instructions but here the real fun begins. You have to implement user-input to play a text-based adventure game. Every character you write should be converted to its ascii-code. There are a couple of ways to do this, but I tried two:
 - readLine function
 - custom function
-I chose to make a (simple) custom function because using the readLine function during a while loop is asking for trouble in my opinion. Of course it is a matter of choice but my method also allowed us to run several concecutive inputs at once. If you want to use the readLine function, you could use something like this:
+
+I chose to make a (simple) custom function because using the readLine function during a while loop is asking for trouble in my opinion. Of course it is a matter of choice but my method also allowes us to run several concecutive inputs at once. If you want to use the readLine function, you could use something like this and use *u_input* in your Opcode 20:
 ```R
 user_input <- function()
 { 
@@ -85,4 +86,4 @@ user_input <- function()
   
 }
 ```
-
+The met
