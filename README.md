@@ -201,4 +201,6 @@ This recursive formula holds until *e* is zero. At this point *d* is decreased b
 ```
 e(n+1) = (b + f(n) + 1) %% mdl
 ```
-And it starts over again, by decreasing *e* until it is zero. I hope you'll understand the rythm a little bit. To really understand what is happening, look at border cases. I also added a faster 'optimized' script to create a matrix like in the table. Note that this is certainly not a fully working script and it also is not cleaned (I found it in my scribbles and it might help you a bit). 
+And it starts over again, by decreasing *e* until it is zero. I hope you'll understand the rythm a little bit. To really understand what is happening, look at border cases. I also added a faster 'optimized' [script](https://github.com/zapateros/Synacor-Challenge/blob/master/R/confirmation_mechanism_draft.R) to create a matrix like in the table. Note that this is certainly not a fully working script and it also is not cleaned (I found it in my drafts and it might help you a bit). 
+
+The method I described above can be implemented and run, but we are still missing an ingredient.  
