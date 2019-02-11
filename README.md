@@ -13,7 +13,7 @@ I'm writing this readme as a manual/blog, or at least how I solved the problems,
 Finding the first code is easy. Just download the files from the website (the given link). The file 'arch-spec' contains the instructions to get you going and 'challenge.bin' obviously is the input binary file. The first file also contains your first code (1/8). Now you can't stop anymore.
 
 ## Chapter 2: Little-endian pairs
-Your first step is to convert the binary file to a vector of readable numbers (for us). Each number is composed of a 16-bit litle-endian pair, which basically means that every 16 bits (or two bytes of 8 bits each) represent an integer. The term little-endian pair means that the first byte (read from left to right) is the small one, and so the second the large one. Each byte is read from right to left by standard means, so 01010110 is equivalent to ```0 + 64 + 0 + 16 + 0 + 4 + 2 + 0 = 86```. If this byte is the second of the pair, it has to be multiplied by 256 (or shifted by 8 bits). Now you have to add the first and the second integer to get the resulting integer of the little-endian pair. This results in a vector of 30050 integers from 0 to 32775. The R-code doing this is given below:
+Your first step is to convert the binary file to a vector of readable numbers (for us). Each number is composed of a 16-bit little-endian pair, which basically means that every 16 bits (or two bytes of 8 bits each) represent an integer. The term little-endian pair means that the first byte (read from left to right) is the small one, and so the second the large one. Each byte is read from right to left by standard means, so 01010110 is equivalent to ```0 + 64 + 0 + 16 + 0 + 4 + 2 + 0 = 86```. If this byte is the second of the pair, it has to be multiplied by 256 (or shifted by 8 bits). Now you have to add the first and the second integer to get the resulting integer of the little-endian pair. This results in a vector of 30050 integers from 0 to 32775. The R-code doing this is given below:
 ```R
 file_name <- "challenge.bin"
 info      <- file.info(file_name)
@@ -25,7 +25,7 @@ The numbers 0 to 32767 are read as a literal value. The numbers 32768 to 32775 a
 
 This is really all it is. But I can imagine this doesn't really make sense at this point. After you finish the challenge, read this statement again and I'm sure it will. 
 
-The second step is to implement Opcode 0, 19 and 21, as stated in the instructions. I'm writing every Opcode as a function, which can be called when needed. All the relevant Opcodes are given in the R-scripts or in the 'arch-spec'-file. The latter also contains an example of how to read the numbers of the vector lbe and what actions should follow. I'm walking you through the very first steps, just for (hopefully) some clarity. 
+The second step is to implement Opcode 0, 19 and 21, as stated in the instructions. I'm writing every Opcode as a function, which can be called when needed. All the relevant Opcodes are given in the R-scripts or in the 'arch-spec'-file. The latter also contains an example of how to read the numbers of the vector *lbe* and what actions should follow. I'm walking you through the very first steps, just for (hopefully) some clarity. 
 
 |i   | 1 | 2 | 3 | 4 | 5 | 6 | 7|
 |---|---|---|---|---|---|---|---|
@@ -92,3 +92,20 @@ Basically what you are doing is call Opcode 20 manually, with your choice as the
 - *go("use tablet")*
 
 And there it is, code 4/8! 
+
+## Chapter 5: 
+To earn the next code, you have to play a text-based adventure game. You can just use the *go* function to input your concecutive choices. However, especially when starting over and over again, you really want to write multiple inputs at once. Therefore I add a the option to input your choices manually (one at a time) or automatic (multiple at once). The mode starts at "auto" but you can switch by calling ```set_mode("manual")```. If the mode is "auto", the function *go* eats a vector of characters, called *input_chars*. The input could be something like this:
+```R
+inputs <-c("doorway", "north", "north", "bridge")
+input_chars <- unlist(strsplit(paste0(inputs,"0"),""))
+input_chars <- gsub("0","\n", input_chars)
+```
+The above code merges all inputs with a seperating "0", splits the string to separate characters and then replaces all zeros with "\n". The extra step is necessary because otherwise "\n" is split to two characters. The difference is that the virtual machine doesn't stop everytime Opcode 20 is reached. It only stops when it is looped through all characters of the inputs. 
+
+To find the next code you just have to take the following steps:
+```R
+"doorway", "north", "north", "bridge", "continue", "down", "east", "take empty lantern", "west", "west", "passage", "ladder", "west", "south", "north"
+```
+And the fifth code is chiseled on the wall! (5/8)
+
+
