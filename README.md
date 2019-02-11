@@ -208,8 +208,10 @@ When eventually *c,d,e* and *f* are all zero, all fours, threes, twos and ones i
 We are looking for an input value of register 8, where the output *a* is 6. Also we know that at the end, *a* is always *b* + 1 (because of the action taken at *i* is 6031). With the method, described above, we can try setting register 8 to the values 1 to 32768 and check what the output *b* and *a* are. However, at this point the script is not fast enough yet. With the method described above, you have to loop through *c,d* and *e* but actually this is not necessary. The loop through *e* can be removed if you look closer at what is happening. In other words, the above method calculates the next *f* for every decrease of *e*, however, it is also possible to completely skip this step and look at what the value of *e* is every time *d* decreases. Let's look at an example of the recursive function:
 ```R
 f(1) = (f(0) + b + 1) %% mdl
-f(2) = (f(1) + b + 1) %% mdl    ==    (((f(0) + b + 1) %% mdl) + b + 1) %% mdl    ==  (f(0) + b + 1 + b + 1) %% mdl   
-     == (f(0) + 2*b + 2*1) %% mdl
+f(2) = (f(1) + b + 1) %% mdl   
+     = (((f(0) + b + 1) %% mdl) + b + 1) %% mdl    
+     = (f(0) + b + 1 + b + 1) %% mdl   
+     = (f(0) + 2*b + 2*1) %% mdl
 f(n) = (f(0) + n*b + n) %% mdl
 ```
 Proving theorems was never my strong suit but this one is correct. Now let's fill it in, with our example of register 8 set to 20,000:
