@@ -104,7 +104,8 @@ The above code merges all inputs with a seperating "0", splits the string to sep
 
 To find the next code you just have to take the following steps:
 ```R
-"doorway", "north", "north", "bridge", "continue", "down", "east", "take empty lantern", "west", "west", "passage", "ladder", "west", "south", "north"
+"doorway", "north", "north", "bridge", "continue", "down", "east", "take empty lantern", "west", "west",
+"passage", "ladder", "west", "south", "north"
 ```
 And the fifth code is chiseled on the wall! (5/8)
 
