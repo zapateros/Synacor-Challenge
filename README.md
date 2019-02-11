@@ -139,8 +139,8 @@ It is time for the hard part. When you teleport, you will find yourself in the l
 First you have to find where the confirmation mechanism starts and what the conditions are. After setting register eight to a random value, I looked at what values of *i* were used and looked for a pattern. The pattern starts when *i* is 6028 for the first time.
 
 |i   |Opcode| action | 
-|---|---|---|
-|6028 | 7 |if reg1 == 0, go to 6031 <br />  if reg1 != 0, go to 6036|
+|---|:---:|---|
+|6028 | 7 |<ul><li>if reg1 == 0, go to 6031 </li><li>  if reg1 != 0, go to 6036</li></ul>|
 |6031|9|reg1 <- (reg2 + 1) %% mdl <br /> go to 6035|
 |6035|18|if last value of stack is 6067 or 6047, remove it and go to 6035 <br /> if last value of stack is 6056, go to 6057 <br /> if last value of stack is neither of these, **mechanism ended**|
 |6036|7|if reg2 == 0, go to 6039 <br /> if reg2 != 0, go to 6049|
