@@ -136,7 +136,7 @@ This function creates a matrix of all possible combinations and then tries it on
 ## Chapter 7: The confirmation mechanism
 It is time for the hard part. When you teleport, you will find yourself in the lobby of the Synacor Headquarters and on the bookshelf there is a strange book with vague clues in it. Well, actually the clues are pretty clear, once you know what to do. If you ran the code from chapter 6, you can open the book with the following commands: ```set_mode("manual")``` and ```go("look strange book")```. In short: you have to set the eight register (manually) to a certain value and then activate the teleporter. Then a confirmation mechanism will check if the register is set to the correct value and allowes you to pass. However, this mechanism will take forever and therefore you have to reverse engineer and optimize it. In my case, multiple times. I will walk you through my thought process.
 
-First you have to find where the confirmation mechanism starts and what the conditions are. After setting register eight to a random value, I looked at what values of *i* were used and looked for a pattern. The pattern starts when *i* is 6028 for the first time.
+First you have to find where the confirmation mechanism starts and what the conditions are. After setting register eight to a random value (in this case 1), I looked at what values of *i* were used and looked for a pattern. The pattern starts when *i* is 6028 for the first time. At this point the registers and stack are respectively ``` c(4, 1, 3, 10, 101, 0, 0, 1)``` and ``` c(6080, 16, 6124, 1, 2952, 25978, 3568, 3599, 2708, 5445, 3, 5491)```. The pattern of the confirmation mechanism is given as semi-pseudocode in the next table:
 
 |i   |Opcode| Action | 
 |---|:---:|---|
@@ -155,4 +155,6 @@ First you have to find where the confirmation mechanism starts and what the cond
 |6062|9|reg1 <- (reg1 + 32767) %% mdl <br /> Go to 6066|
 |6066|17|Add 6067 to stack <br /> Go to 6028|
 
+You can read this table as follows: the virtual machine starts at *i* is 6028 and *reg1* is not zero. Therefore *i* jumps to 6036. *reg2* also is not zero and so *i* jumps to 6049. Now *reg1* is added to the stack (4) and *i* jumps to 6051. The mechanism loops through these values of *i* until *i* is 6035 and the last value of the stack is something else than 6067, 6047 or 6056. We'll see later that this value turns out to be 5491. At this point it is important to note that register 3 to 7 are not affected by the mechanism. When you write a script that runs this mechanism (faster), you'll see that there is an interaction between *reg1*, *reg2*, *reg8* and the *stack*. It was not until after I completed the challenge when I read that it is an adaptation of the Ackermann function, but in all honesty, I don't think knowing this would have helped me during the challenge. 
 
+I ran the script and saved the length of the stack and I saw a wave pattern. When I looked closer to the stack I saw it was filled with threes, twos and zeros. Therefore my instinct was to count occurrences of these particular numbers and saw a pattern. At this point I  
