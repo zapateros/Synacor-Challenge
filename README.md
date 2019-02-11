@@ -93,7 +93,7 @@ Basically what you are doing is call Opcode 20 manually, with your choice as the
 
 And there it is, code 4/8! 
 
-## Chapter 5: 
+## Chapter 5: Manual or automatic?
 To earn the next code, you have to play a text-based adventure game. You can just use the *go* function to input your concecutive choices. However, especially when starting over and over again, you really want to write multiple inputs at once. Therefore I add a the option to input your choices manually (one at a time) or automatic (multiple at once). The mode starts at "auto" but you can switch by calling ```set_mode("manual")```. If the mode is "auto", the function *go* eats a vector of characters, called *input_chars*. The input could be something like this:
 ```R
 inputs <-c("doorway", "north", "north", "bridge")
