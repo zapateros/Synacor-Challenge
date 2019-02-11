@@ -121,7 +121,7 @@ Also, near this room you can find 5 coins:
 - Concave coin
 - Shiny coin
 
-And lastly, north of the formula-room, there is a door with 5 slots where you can put the coins. So in short: A door with five slots, five coins and a formula with five variables. Easy peasy right? For the slow ones among us: you have to insert the coins in the right order to solve the formula, after which the door opens. Every coin has its value, which you can check if you put it in the door-slot and go back to the formula-room. There the values of the concecutive inserted coins are written in the formula. The coins are (respetively to the list) worth: 3, 2, 9, 7 and 5. Now it's up to you to find the correct order, where it solves the formula. 
+And lastly, north of the formula-room, there is a door with 5 slots where you can put the coins into. So in short: A door with five slots, five coins and a formula with five variables. Easy peasy right? For the slow ones among us: you have to insert the coins in the right order to solve the formula, after which the door opens. Every coin has its value, which you can check if you put it into the door-slot and go back to the formula-room. There the values of the concecutive inserted coins are written in the formula. The coins are (respectively to the list) worth: 3, 2, 9, 7 and 5. Now it's up to you to find the correct order, for which it solves the formula. 
 
 I use a simple pragmatic method to find the solution to the formula with the given values. I just brute force every possible combination:
 ```R
@@ -132,4 +132,5 @@ pc              <- possible_values[uniq_rows,]
 func_res        <- pc[, 1] + pc[, 2] * pc[, 3] ^ 2 + pc[, 4] ^ 3 - pc[, 5] == 399
 pc[func_res,]
 ```
-This function creates a matrix of all possible combinations and then fills tries it on the formula. The result is 9, 2, 5, 7, 3, which translates to blue coin, red coin, shiny coin, convave coin and corroded coin in this order. In the next room you'll find a teleporter. When activating the teleporter, it (who would have thought) teleports you to new place where you'll find the next code! (6/8)
+This function creates a matrix of all possible combinations and then tries it on the formula. The result is 9, 2, 5, 7, 3, which translates to blue coin, red coin, shiny coin, convave coin and corroded coin in this order. In the next room you'll find a teleporter. When activating the teleporter, it (who would have thought) teleports you to new place where you'll find the next code! (6/8)
+
