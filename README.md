@@ -197,10 +197,24 @@ Everytime *e* decreases, the value of *f* is different. If you look at matrix *v
 ```
 f(n+1) = (f(n) + b + 1) %% mdl
 ```
-This recursive formula holds until *e* is zero. At this point *d* is decreased by 1 and *f* starts at 20000 again. If *e* is zero, the next *e* is:
+This recursive function holds until *e* is zero. At this point *d* is decreased by 1 and *f* starts at 20000 again. If *e* is zero, the next *e* is:
 ```
 e(n+1) = (b + f(n) + 1) %% mdl
 ```
-And it starts over again, by decreasing *e* until it is zero. I hope you'll understand the rythm a little bit. To really understand what is happening, look at border cases. I also added a faster 'optimized' [script](https://github.com/zapateros/Synacor-Challenge/blob/master/R/confirmation_mechanism_draft.R) to create a matrix like in the table. Note that this is certainly not a fully working script and it also is not cleaned (I found it in my drafts and it might help you a bit). 
+And it starts over again, by decreasing *e* until it is zero. I hope you'll understand the rythm a little bit. To really understand what is happening, look at border cases. I also added a faster 'optimized' [script](https://github.com/zapateros/Synacor-Challenge/blob/master/R/confirmation_mechanism_draft.R) to create a matrix like in the above table. Note that this is certainly not a fully working script and it also is not cleaned (I found it in my ugly drafts corner and it might help you understanding the mechanism a bit). 
 
-The method I described above can be implemented and run, but we are still missing an ingredient.  
+When eventually *c,d,e* and *f* are all zero, all fours, threes, twos and ones in the stack are gone again. Now the last value is 5491 and so *i* jumps to 5492 (because index start at 1 in R). The virtual machine then checks the value of register 1 (or *a*). The value 6 seems to be the magic number where the *vm* continues on the right path. However, just setting *a* to 6 and bypass the confirmation mechanism doesn't do the trick, because not much later it also checks the value of register 8. Therefore it is the combination of register 1 and 8 that should be correct, for the teleporter to run smoothly. I know what you are probably thinking: instead of puzzling out the confirmation mechanism, you could just try to force every value of register 8 and check when you get a different outcome (or a code). Well, I have news for you buddy: I tried. And it didn't work because obviously the creator also thought of it. For every register 8 you'll set, the outcome is exactly the same, with one small difference: every time you get another code. The only way to find out if your code is correct, is to manually fill it in at the synacor website. So there is no other way than solving the mechanism. Luckily we are very close. 
+
+We are looking for an input value of register 8, where the output *a* is 6. Also we know that at the end, *a* is always *b* + 1 (because of the action taken at *i* is 6031). With the method, described above, we can try setting register 8 to the values 1 to 32768 and check what the output *b* and *a* are. However, at this point the script is not fast enough yet. With the method described above, you have to loop through *c,d* and *e* but actually this is not necessary. The loop through *e* can be removed if you look closer at what is happening. In other words, the above method calculates the next *f* for every decrease of *e*, however, it is also possible to completely skip this step and look at what the value of *e* is every time *d* decreases. Let's look at an example of the recursive function:
+```R
+f(1) = (f(0) + b + 1) %% mdl
+f(2) = (f(1) + b + 1) %% mdl    ==    (((f(0) + b + 1) %% mdl) + b + 1) %% mdl    ==  (f(0) + b + 1 + b + 1) %% mdl   
+     == (f(0) + 2*b + 2*1) %% mdl
+f(n) = (f(0) + n*b + n) %% mdl
+```
+Proving theorems was never my strong suit but this one is correct. Now let's fill it in, with our example of register 8 set to 20,000:
+```R
+f(20000) = (20000 + 20000*20000 + 20000) %% mdl == 8256
+```
+Remember, this function holds until *e* is zero, and therefore calculates *f* at *e* is zero (second-last row). It is correct! Now we completely skipped the 20,000 iterations long for-loop. 
+ 
