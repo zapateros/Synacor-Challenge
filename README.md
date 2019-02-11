@@ -94,13 +94,13 @@ Basically what you are doing is call Opcode 20 manually, with your choice as the
 And there it is, code 4/8! 
 
 ## Chapter 5: Manual or automatic?
-To earn the next code, you have to play a text-based adventure game. You can just use the *go* function to input your concecutive choices. However, especially when starting over and over again, you really want to write multiple inputs at once. Therefore I add a the option to input your choices manually (one at a time) or automatic (multiple at once). The mode starts at "auto" but you can switch by calling ```set_mode("manual")```. If the mode is "auto", the function *go* eats a vector of characters, called *input_chars*. The input could be something like this:
+To earn the next code, you have to play a text-based adventure game. **Beware: I am not giving hints about what steps you should take; I am giving you the fastest way in completing the game straight-up.** I really advise you to just play the game, as it is quite amusing. You can just use the *go* function to input your concecutive choices. However, especially when starting over and over again, you really want to write multiple inputs at once. Therefore I add a the option to input your choices manually (one at a time) or automatic (multiple at once). The mode starts at "auto" but you can switch by calling ```set_mode("manual")```. If the mode is "auto", the function *go* eats a vector of characters, called *input_chars*. The input could be something like this:
 ```R
 inputs <-c("doorway", "north", "north", "bridge")
 input_chars <- unlist(strsplit(paste0(inputs,"0"),""))
 input_chars <- gsub("0","\n", input_chars)
 ```
-The above code merges all inputs with a seperating "0", splits the string to separate characters and then replaces all zeros with "\n". The extra step is necessary because otherwise "\n" is split to two characters. The difference is that the virtual machine doesn't stop everytime Opcode 20 is reached. It only stops when it is looped through all characters of the inputs. 
+The above code merges all inputs with a separating "0", splits the string to separate characters and then replaces all zeros with "\n". The extra step is necessary because otherwise "\n" is split to two characters. The mode "auto" differs from "manual" in that the virtual machine doesn't stop everytime Opcode 20 is reached. It only stops when it has looped through all characters of the inputs. 
 
 To find the next code you just have to take the following steps:
 ```R
@@ -109,4 +109,27 @@ To find the next code you just have to take the following steps:
 ```
 And the fifth code is chiseled on the wall! (5/8)
 
+## Chapter 6: A worthless treasure
+If you continue playing the game, you eventually enter a room with a formula on the walls:
+```R 
+_ + _ * _^2 + _^3 - _ = 399
+```
+Also, near this room you can find 5 coins:
+- Corroded coin
+- Red coin
+- Blue coin
+- Concave coin
+- Shiny coin
 
+And lastly, north of the formula-room, there is a door with 5 slots where you can put the coins. So in short: A door with five slots, five coins and a formula with five variables. Easy peasy right? For the slow ones among us: you have to insert the coins in the right order to solve the formula, after which the door opens. Every coin has its value, which you can check if you put it in the door-slot and go back to the formula-room. There the values of the concecutive inserted coins are written in the formula. The coins are (respetively to the list) worth: 3, 2, 9, 7 and 5. Now it's up to you to find the correct order, where it solves the formula. 
+
+I use a simple pragmatic method to find the solution to the formula with the given values. I just brute force every possible combination:
+```R
+possible_values <- expand.grid(rep(list(c(2, 3, 5, 7, 9)), 5))
+uniq_rows       <- sapply(c(1:nrow(pos_vals)),function(x){
+                    !any(duplicated(unlist(possible_values[x,])))})
+pc              <- possible_values[uniq_rows,]
+func_res        <- pc[, 1] + pc[, 2] * pc[, 3] ^ 2 + pc[, 4] ^ 3 - pc[, 5] == 399
+pc[func_res,]
+```
+This function creates a matrix of all possible combinations and then fills tries it on the formula. The result is 9, 2, 5, 7, 3, which translates to blue coin, red coin, shiny coin, convave coin and corroded coin in this order. In the next room you'll find a teleporter. When activating the teleporter, it (who would have thought) teleports you to new place where you'll find the next code! (6/8)
