@@ -157,4 +157,37 @@ First you have to find where the confirmation mechanism starts and what the cond
 
 You can read this table as follows: the virtual machine starts at *i* is 6028 and *reg1* is not zero. Therefore *i* jumps to 6036. *reg2* also is not zero and so *i* jumps to 6049. Now *reg1* is added to the stack (4) and *i* jumps to 6051. The mechanism loops through these values of *i* until *i* is 6035 and the last value of the stack is something else than 6067, 6047 or 6056. We'll see later that this value turns out to be 5491. At this point it is important to note that register 3 to 7 are not affected by the mechanism. When you write a [script](https://github.com/zapateros/Synacor-Challenge/blob/master/R/confirmation_mechanism.R) that runs this mechanism (faster), you'll see that there is an interaction between *reg1*, *reg2*, *reg8* and the *stack*. It was not until after I completed the challenge when I read that it is an adaptation of the Ackermann function, but in all honesty, I don't think knowing this would have helped me during the challenge. 
 
-I ran the script and saved the length of the stack and I saw a wave pattern. When I looked closer to the stack I saw it was filled with threes, twos and zeros. Therefore my instinct was to count occurrences of these particular numbers and saw a pattern. At this point I  
+I ran the script and saved the length of the stack and I saw a wave pattern. When I looked closer to the stack I saw it was filled with threes, twos and zeros. Therefore my instinct was to count occurrences of these particular numbers and saw a pattern. At this point I started looking at the problem from a different perspective: I created six variables *a,b,c,d,e* and *f*, which represent *reg1*, *reg2*, amount of fours, amount of threes, amount of twos and amount of ones in the stack respectively. Important is to **not** count the one and three that were in the stack at the beginning. When running the script while saving these variables every iteration for a while (it will practically never end), you'll see what happens. Especially when you change register 8, you should be able to see what happens. 
+
+I saw that the script fills *b, d, e* and *f* up to the value you have given in register 8 before running the teleporter. So the starting point, for this second reverse engineering attempt, is ```c(0, reg8, 1, reg8, reg8, reg8)```. Now let's try running the script with a starting *reg8* of 20,000. I used this high number because there are calculations with modulus 32768 and therefore you should pick a high starting number to really see what is happening in the high regions. You could just run the script and wait a while, but because it fills the stack with 20,000 threes, twos and zeros, you could also just help it a bit and set the following starting points:
+```R
+reg1 <- 0
+h <- 20000
+reg2 <- h
+vw <- NULL
+stack <- c( 6080, 16, 6124, 1, 2952, 25978, 3568, 3599, 2708, 5445, 3, 5491,
+            rep(c(4,6056), 1),6067,
+            rep(c(3,6056), h),6067,
+            rep(c(2,6056), h),6067, 
+            rep(c(1,6056), h),6067)
+```
+and put 
+```R
+a <- reg1
+b <- reg2
+c <- sum(stack==4)
+d <- sum(stack==3)-1
+e <- sum(stack==2)
+f <- sum(stack==1)-1
+vw <- rbind(vw,c(a, b, c, d, e, f)) 
+``` 
+in the top of the while loop to save the relevant values to a matrix. If you have run it for a while, you should look for the rows where *a* is 0, *b* is 20,000 and *e* is 19999, 19998, 19997 etc. These are the interesting rows, because when *f* is 0, *e* decreases by 1, if *e* is at 0, *d* decreases by 1 and if *d* is at 0, *c* decreases by one. The confirmation mechanism is done when values *c, d, e* and *f* are zero. And then what? I will explain in a bit. First, let's look at what values we are seeing. You should see the following rows in your matrix *vw*:
+|a|b|c|d|e|f|
+|:---:|:---:|:---:|:---:|:---:|:---:|
+|0|20000|1|20000|20000|20000|
+|0|20000|1|20000|19999|7233|
+|0|20000|1|20000|19998|27234|
+|0|20000|1|20000|19997|14467|
+|.|.|.|.|.|.|
+|0|20000|1|20000|0|8256|
+|0|20000|1|19999|28257|20000|
