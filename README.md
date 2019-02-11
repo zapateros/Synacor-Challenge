@@ -140,7 +140,7 @@ First you have to find where the confirmation mechanism starts and what the cond
 
 |i   |Opcode| action | 
 |---|:---:|---|
-|6028 | 7 |<ul><li>if reg1 == 0, go to 6031 </li><li>  if reg1 != 0, go to 6036</li></ul>|
+|6028 | 7 |if reg1 == 0, go to 6031 <br /> if reg1 != 0, go to 6036>|
 |6031|9|reg1 <- (reg2 + 1) %% mdl <br /> go to 6035|
 |6035|18|if last value of stack is 6067 or 6047, remove it and go to 6035 <br /> if last value of stack is 6056, go to 6057 <br /> if last value of stack is neither of these, **mechanism ended**|
 |6036|7|if reg2 == 0, go to 6039 <br /> if reg2 != 0, go to 6049|
