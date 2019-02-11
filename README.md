@@ -140,4 +140,5 @@ First you have to find where the confirmation mechanism starts and what the cond
 
 |i   |lbe[i]| action | 
 |---|---|---|
-|6028 | 7 | if reg1 == 0, go to 6031 <br /> if reg1 != 0, go to 6036|
+|6028 | 7 |- if reg1 == 0, go to 6031 
+- if reg1 != 0, go to 6036|
