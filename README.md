@@ -181,7 +181,7 @@ e <- sum(stack==2)
 f <- sum(stack==1)-1
 vw <- rbind(vw,c(a, b, c, d, e, f)) 
 ``` 
-in the top of the while loop to save the relevant values to a matrix. If you have run it for a while, you should look for the rows where *a* is 0, *b* is 20,000 and *e* is 19999, 19998, 19997 etc. These are the interesting rows, because when *f* is 0, *e* decreases by 1, if *e* is at 0, *d* decreases by 1 and if *d* is at 0, *c* decreases by one. The confirmation mechanism is done when values *c, d, e* and *f* are zero. And then what? I will explain in a bit. First, let's look at what values we are seeing. You should see the following rows in your matrix *vw*:
+in the top of the while loop to save the relevant values to a matrix. If you have run it for a while, you should look for the rows where *a* is 0, *b* is 20,000 and *e* is 19999, 19998, 19997 etc. These are the interesting rows, because when *f* is 0, *e* decreases by 1, if *e* is at 0, *d* decreases by 1 and if *d* is at 0, *c* decreases by one. The confirmation mechanism is done when values *c, d, e* and *f* are zero. And then what? I will explain in a bit. First, let's look at what values we are seeing. You should see the following rows somewhere in your matrix *vw*:
 
 |a|b|c|d|e|f|
 |:---:|:---:|:---:|:---:|:---:|:---:|
@@ -192,3 +192,13 @@ in the top of the while loop to save the relevant values to a matrix. If you hav
 |.|.|.|.|.|.|
 |0|20000|1|20000|0|8256|
 |0|20000|1|19999|28257|20000|
+
+Everytime *e* decreases, the value of *f* is different. If you look at matrix *vw* you might see the following pattern: 
+```
+f(n+1) = (f(n) + b + 1) %% mdl
+```
+This recursive formula holds until *e* is zero. At this point *d* is decreased by 1 and *f* starts at 20000 again. If *e* is zero, the next *e* is:
+```
+e(n+1) = (b + f(n) + 1) %% mdl
+```
+And it starts over again, by decreasing *e* until it is zero. I hope you'll understand the rythm a little bit. To really understand what is happening, look at border cases. I also added a faster 'optimized' script to create a matrix like in the table. Note that this is certainly not a fully working script and it also is not cleaned (I found it in my scribbles and it might help you a bit). 
