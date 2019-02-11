@@ -182,6 +182,7 @@ f <- sum(stack==1)-1
 vw <- rbind(vw,c(a, b, c, d, e, f)) 
 ``` 
 in the top of the while loop to save the relevant values to a matrix. If you have run it for a while, you should look for the rows where *a* is 0, *b* is 20,000 and *e* is 19999, 19998, 19997 etc. These are the interesting rows, because when *f* is 0, *e* decreases by 1, if *e* is at 0, *d* decreases by 1 and if *d* is at 0, *c* decreases by one. The confirmation mechanism is done when values *c, d, e* and *f* are zero. And then what? I will explain in a bit. First, let's look at what values we are seeing. You should see the following rows in your matrix *vw*:
+
 |a|b|c|d|e|f|
 |:---:|:---:|:---:|:---:|:---:|:---:|
 |0|20000|1|20000|20000|20000|
