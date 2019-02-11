@@ -136,4 +136,8 @@ This function creates a matrix of all possible combinations and then tries it on
 ## Chapter 7: The confirmation mechanism
 It is time for the hard part. When you teleport, you will find yourself in the lobby of the Synacor Headquarters and on the bookshelf there is a strange book with vague clues in it. Well, actually the clues are pretty clear, once you know what to do. If you ran the code from chapter 6, you can open the book with the following commands: ```set_mode("manual")``` and ```go("look strange book")```. In short: you have to set the eight register (manually) to a certain value and then activate the teleporter. Then a confirmation mechanism will check if the register is set to the correct value and allowes you to pass. However, this mechanism will take forever and therefore you have to reverse engineer and optimize it. In my case, multiple times. I will walk you through my thought process.
 
-First you have to find where the confirmation mechanism starts and what the conditions are. After setting register eight to a random value, I looked at what values of *i* were used and looked for a pattern. 
+First you have to find where the confirmation mechanism starts and what the conditions are. After setting register eight to a random value, I looked at what values of *i* were used and looked for a pattern. The pattern starts when *i* is 6028 for the first time.
+
+|i   |lbe[i]| action | 
+|---|---|---|
+|6028 | 21 | d|
