@@ -138,21 +138,21 @@ It is time for the hard part. When you teleport, you will find yourself in the l
 
 First you have to find where the confirmation mechanism starts and what the conditions are. After setting register eight to a random value, I looked at what values of *i* were used and looked for a pattern. The pattern starts when *i* is 6028 for the first time.
 
-|i   |Opcode| action | 
+|i   |Opcode| Action | 
 |---|:---:|---|
-|6028 | 7 |if reg1 == 0, go to 6031 <br /> if reg1 != 0, go to 6036>|
-|6031|9|reg1 <- (reg2 + 1) %% mdl <br /> go to 6035|
-|6035|18|if last value of stack is 6067 or 6047, remove it and go to 6035 <br /> if last value of stack is 6056, go to 6057 <br /> if last value of stack is neither of these, **mechanism ended**|
-|6036|7|if reg2 == 0, go to 6039 <br /> if reg2 != 0, go to 6049|
-|6039|9|reg1 <- (reg1 + 32767) %% mdl <br /> go to 6043|
-|6043|1|reg2 <- reg8 <br /> go to 6046|
-|6046|17|add 6047 to stack <br /> go to 6028|
-|6049|2|add reg1 to stack <br />  go to 6051|
-|6051|9|reg2 <- (reg2 + 32767) %% mdl <br /> go to 6055|
-|6055|17|add 6056 to stack <br /> go to 6028|
-|6057|1|reg2 <- reg1 <br /> go to 6060|
-|6060|3|put last value of stack in reg1 and remove it from stack <br /> go to 6062|
-|6062|9|reg1 <- (reg1 + 32767) %% mdl <br /> go to 6066|
-|6066|17|add 6067 to stack <br /> go to 6028|
+|6028 | 7 |If reg1 == 0, go to 6031 <br /> If reg1 != 0, go to 6036|
+|6031|9|reg1 <- (reg2 + 1) %% mdl <br /> Go to 6035|
+|6035|18|If last value of stack is 6067 or 6047, remove it and go to 6035 <br /> If last value of stack is 6056, go to 6057 <br /> If last value of stack is neither of these, **mechanism ended**|
+|6036|7|If reg2 == 0, go to 6039 <br /> If reg2 != 0, go to 6049|
+|6039|9|reg1 <- (reg1 + 32767) %% mdl <br /> Go to 6043|
+|6043|1|reg2 <- reg8 <br /> Go to 6046|
+|6046|17|Add 6047 to stack <br /> Go to 6028|
+|6049|2|Add reg1 to stack <br />  Go to 6051|
+|6051|9|reg2 <- (reg2 + 32767) %% mdl <br /> Go to 6055|
+|6055|17|Add 6056 to stack <br /> Go to 6028|
+|6057|1|reg2 <- reg1 <br /> Go to 6060|
+|6060|3|Put last value of stack in reg1 and remove it from stack <br /> Go to 6062|
+|6062|9|reg1 <- (reg1 + 32767) %% mdl <br /> Go to 6066|
+|6066|17|Add 6067 to stack <br /> Go to 6028|
 
 
