@@ -218,5 +218,5 @@ Proving theorems was never my strong suit but this one is correct. Now let's fil
 ```R
 f(20000) = (20000 + 20000*20000 + 20000) %% mdl == 8256
 ```
-Remember, this function holds until *e* is zero, and therefore calculates *f* at *e* is zero (second-last row). It is correct! Now we completely skipped the 20,000 iterations long for-loop. 
+Remember, this function holds until *e* is zero, and therefore calculates *f* at *e* is zero (second-last row). It is correct! Now we completely skipped the 20,000 iterations long for-loop. This method can be repeated 
  
