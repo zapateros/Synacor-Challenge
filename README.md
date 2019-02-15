@@ -235,19 +235,32 @@ f(2) = (f(1) + b + 1) %% mdl
      = (((f(0) + b + 1) %% mdl) + b + 1) %% mdl    
      = (f(0) + b + 1 + b + 1) %% mdl   
      = (f(0) + 2*b + 2*1) %% mdl
-f(n) = (f(0) + n*b + n) %% mdl
+     = (f(0) + n*b + n) %% mdl
+f(n) = (f(0) + n*(b + 1)) %% mdl    #for n <= b  
 ```
-This formula can be used to calculate *f* after *n* repetitions of the recursive formula. When filling in *n* is 20000, *f* is 8256, which agrees with our given value of *f* at *e* is zero. To calculate the next starting point of *e* is then simple: 
+This formula can be used to calculate *f* after *n* repetitions of the recursive formula. When filling in *n* is 20000, *f* is 8256, which agrees with our given value of *f* at *e* is zero. To calculate the next starting point of *e* is then simple:
+
+```
+e = (b + f(20000) + 1) %% mdl
+```
+Which is exactly the same value as when we used the recursive formula 20,001 times or the general formula with *n* is 20,001. Therefore we can write a new 'general' formula for *e* when *d* decreases by one:
+
+```R
+e(n+1) = (b + f(e(n)) + 1) %% mdl
+       = (b + (f(0) + e(n)*(b + 1)) %% mdl + 1) %% mdl
+       = (b + f(0) + e(n)*(b + 1) + 1) %% mdl     #for n < d
+```
+Be aware of the fact that the solutions are technically not general but merely pragmatic optimizations, which could lead to a general solution. With the above formula we can calculate every next starting point of *e* when *d* decreases by one, until *d* is zero. When *d* is zero, *c* decreases by one and the new starting point of *d* is:
+
+```R
+d = (b + f(0) + e(n)*(b + 1) + 1) %% mdl 
+```
+Luckily *c* started at one, so this method only has to run twice. At this point we also have optimized the mechanism well enough to have an acceptable runtime of a few seconds. 
 
 
-Everytime *e* decreases, the value of *f* is different. If you look at matrix *vw* you might see the following pattern: 
-```
-f(n+1) = (f(n) + b + 1) %% mdl
-```
-This recursive function holds until *e* is zero. At this point *d* is decreased by 1 and *f* starts at 20000 again. If *e* is zero, the next *e* is:
-```
-e(n+1) = (b + f(n) + 1) %% mdl
-```
+
+
+
 And it starts over again, by decreasing *e* until it is zero. I hope you'll understand the rythm a little bit. To really understand what is happening, look at border cases. I also added a faster 'optimized' [script](https://github.com/zapateros/Synacor-Challenge/blob/master/R/confirmation_mechanism_draft.R) to create a matrix like in the above table. Note that this is certainly not a fully working script and it also is not cleaned (I found it in my ugly drafts corner and it might help you understanding the mechanism a bit). 
 
 When eventually *c,d,e* and *f* are all zero, all fours, threes, twos and ones in the stack are gone again. Now the last value is 5491 and so *i* jumps to 5492 (because index start at 1 in R). The virtual machine then checks the value of register 1 (or *a*). The value 6 seems to be the magic number where the *vm* continues on the right path. However, just setting *a* to 6 and bypass the confirmation mechanism doesn't do the trick, because not much later it also checks the value of register 8. Therefore it is the combination of register 1 and 8 that should be correct, for the teleporter to run smoothly. I know what you are probably thinking: instead of puzzling out the confirmation mechanism, you could just try to force every value of register 8 and check when you get a different outcome (or a code). Well, I have news for you buddy: I tried. And it didn't work because obviously the creator also thought of it. For every register 8 you'll set, the outcome is exactly the same, with one small difference: every time you get another code. The only way to find out if your code is correct, is to manually fill it in at the synacor website. So there is no other way than solving the mechanism. Luckily we are very close. 
