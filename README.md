@@ -181,7 +181,7 @@ e <- sum(stack==2)
 f <- sum(stack==1)-1
 vw <- rbind(vw,c(a, b, c, d, e, f)) 
 ``` 
-in the top of the while loop to save the relevant values to a matrix (see the new script [here](https://github.com/zapateros/Synacor-Challenge/blob/master/R/Confirmation_mechanism_jump_start.R)). Let's run the script and look at *vw*. Just like I said, it starts with ``` c(0, 20000, 1, 20000, 20000, 20000)```. Now *f* decreases by one every iteration, while *b* increases by one. This goes on for a while and it gets interesting where *b* approaches the value of the modulus (*mdl* is 32768). In the following table some edgecases are shown:
+in the top of the while loop to save the relevant values to a matrix (see the new script [here](https://github.com/zapateros/Synacor-Challenge/blob/master/R/Confirmation_mechanism_jump_start.R)). Let's run the script and look at *vw*. Just like I said, it starts with ``` c(0, 20000, 1, 20000, 20000, 20000)```. Now *f* decreases by one every iteration, while *b* increases by one. This goes on for a while and it gets interesting where *b* approaches the value of the modulo (*mdl* is 32768). In the following table some edgecases are shown (interpolate cells with a dot):
 
 |a|b|c|d|e|f|
 |:---:|:---:|:---:|:---:|:---:|:---:|
@@ -204,11 +204,18 @@ in the top of the while loop to save the relevant values to a matrix (see the ne
 |1|0|1|20000|19999|7233|
 |0|20000|1|20000|19999|7233|
 
-I hope you'll understand you have to interpolate the values when a dot is shown. 
+As can be seen here is that *f* decreases by one, until it hits zero. Meanwhile, until this point, *b* increases by one and starts at zero when the value of the modulo is reached. When *f* is zero, *e* decreases by one and *b* increases by one. From this point *f* starts increasing again, while *b* is decreasing. When *b* reaches zero, it is set to the initial value of *reg8* again. From here it starts the same procedure again. So in the end (of this one procedure) *e* is decreased by one and *f* has a new starting point. If *e* is zero, *d* decreases by one and when *d* is zero, *c* decreases by one. The whole mechanism stops when values *c, d, e* and *f* are all zero. And then what? I will explain in a bit. First let's see how we can speed up this procedure a bit, step by step. 
 
+The procedure, as shown in the above table, contains 40001 iterations (or rows). However, it is easy to see that new starting point of *f* is equivalent to:
+```R
+f(n+1) = (f(n) + b + 1) %% mdl
+```
+So everytime *e* decreases by one, the new *f* is given by this recursive formule. Now we already replaced 40001 iterations. Thats a great start. However, the confirmation mechanism will now not take a billion years, but maybe a million or so. So the next step is to check what happens when *d* decreases by one (when *e* is zero). Or in other words: when you run the above recursive formula 20,000 times. There are three ways of looking what happens at this point:
+- Run the isolated mechanism script for a very, very long while, until you see a decrease in *d*. It helps to choose a small *reg8* and also make sure you don't fill the matrix *vw* until this point as this will slow down the script drastically.
+- Run the recursive formula 20,000 times and set a new starting point, according to how we set it earlier. You have to start the stack with 20,000 threes, 0 twos and 8256 ones. This last value is of course *f* after 20,000 repetitions of the recursive formula. I suggest you only use this method if you understand what is happening, to prevent trying to analyse a wrong output. Believe me, this happened to me multiple times already.
+- The third option is to run the next [script](https://github.com/zapateros/Synacor-Challenge/blob/master/R/confirmation_mechanism_draft.R) for a while. Note that this is an optimized version of the mechanism, but isn't fully functional. Also it is not cleaned as I found it in my ugly drafts corner. However, it might help you understanding the mechanism a bit, as it shows correctly what happens when *d* is decreasing by one. 
 
-
-If you have run it for a while, you should look for the rows where *a* is 0, *b* is 20,000 and *e* is 19999, 19998, 19997 etc. These are the interesting rows, because when *f* is 0, *e* decreases by 1, if *e* is at 0, *d* decreases by 1 and if *d* is at 0, *c* decreases by one. The confirmation mechanism is done when values *c, d, e* and *f* are zero. And then what? I will explain in a bit. First, let's look at what values we are seeing. You should see the following rows somewhere in your matrix *vw*:
+I prefer the second method, as this will give you all the information at the lowest level. While the third method will help you find the correct values quick, it doesn't show you what is really happening (even though it is similar to what we saw earlier). For now, let's run this script (from the third method) for a while. This output will include the next table:
 
 |a|b|c|d|e|f|
 |:---:|:---:|:---:|:---:|:---:|:---:|
@@ -219,6 +226,19 @@ If you have run it for a while, you should look for the rows where *a* is 0, *b*
 |.|.|.|.|.|.|
 |0|20000|1|20000|0|8256|
 |0|20000|1|19999|28257|20000|
+
+Note that the second row is similar to the last row of the previous table. So the values of *f* are also given when running the recursive function. As you can see, when *e* is zero, *f* is 8256. In the next row, *d* is decreased by one and the new starting *e* is 28257. *f* starts at the *b* (or the set *reg8*) again. So our aim is to instantly calculate the new starting point of *e* when *d* is decreasing by one. In this way we bypass a half a billion loops (estimated). Given the recursive formula, we can expand to a general formula:
+
+```R
+f(1) = (f(0) + b + 1) %% mdl
+f(2) = (f(1) + b + 1) %% mdl   
+     = (((f(0) + b + 1) %% mdl) + b + 1) %% mdl    
+     = (f(0) + b + 1 + b + 1) %% mdl   
+     = (f(0) + 2*b + 2*1) %% mdl
+f(n) = (f(0) + n*b + n) %% mdl
+```
+This formula can be used to calculate *f* after *n* repetitions of the recursive formula. When filling in *n* is 20000, *f* is 8256, which agrees with our given value of *f* at *e* is zero. To calculate the next starting point of *e* is then simple: 
+
 
 Everytime *e* decreases, the value of *f* is different. If you look at matrix *vw* you might see the following pattern: 
 ```
