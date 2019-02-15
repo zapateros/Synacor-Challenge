@@ -182,6 +182,7 @@ f <- sum(stack==1)-1
 vw <- rbind(vw,c(a, b, c, d, e, f)) 
 ``` 
 in the top of the while loop to save the relevant values to a matrix (see the new script [here](https://github.com/zapateros/Synacor-Challenge/blob/master/R/Confirmation_mechanism_jump_start.R)). Let's run the script and look at *vw*. Just like I said, it starts with ``` c(0, 20000, 1, 20000, 20000, 20000)```. Now *f* decreases by one every iteration, while *b* increases by one. This goes on for a while and it gets interesting where *b* approaches the value of the modulus (*mdl* is 32768). In the following table some edgecases are shown:
+
 |a|b|c|d|e|f|
 |:---:|:---:|:---:|:---:|:---:|:---:|
 |0|20000|1|20000|20000|20000|
