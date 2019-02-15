@@ -257,7 +257,7 @@ d = (b + f(0) + e(n)*(b + 1) + 1) %% mdl
 ```
 Luckily *c* started at one, so this method only has to run twice. At this point we have optimized the mechanism well enough to have an acceptable runtime. There is a way of 'optimizing' it even further but you can skip this part if you want; I will not use it in the rest of the manual but it might interest you.
 <details>
-<summary>Getting a general solution</summary>
+<summary>Finding a general solution</summary>
 <br>
 I'm making use of the fact that *b, d, e* and *f* all start at the same value of *reg8*; let's call it *x* for a shorter notation:
 
@@ -287,13 +287,9 @@ d_1    <- (x + sum((x + 1)^(2:(d_0 + 2))) %% mdl
 result <- (x + sum((x + 1)^(2:(d_1 + 2))) %% mdl
 ```
 This is the general solution to this problem. However, standard R doesn't really work with high numbers/exponents and therefore it is sufficient to use the 'less-optimized' version. 
-<details>
+</details>
 
-
-
-
-
-
+Let's walk through the script that is able to run the mechanism quickly. 
 
 
 And it starts over again, by decreasing *e* until it is zero. I hope you'll understand the rythm a little bit. To really understand what is happening, look at border cases. I also added a faster 'optimized' [script](https://github.com/zapateros/Synacor-Challenge/blob/master/R/confirmation_mechanism_draft.R) to create a matrix like in the above table. Note that this is certainly not a fully working script and it also is not cleaned (I found it in my ugly drafts corner and it might help you understanding the mechanism a bit). 
