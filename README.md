@@ -159,17 +159,17 @@ You can read this table as follows: the virtual machine starts at *i* is 6028 an
 
 I ran the script and saved the length of the stack every iteration and I saw a wave pattern. When I looked closer to the stack I saw it was filled with threes, twos and zeros. Therefore my instinct was to count occurrences of these particular numbers and saw a pattern. At this point I started looking at the problem from a different perspective: I created six variables *a,b,c,d,e* and *f*, which represent *reg1*, *reg2* and the amount of fours, threes, twos and ones in the stack respectively. Important is to **not** count the one and three that were in the stack at the beginning. When running the script while saving these variables every iteration for a while (it will practically never end), you'll see what happens. Especially when you change register 8, you should be able to see what happens. 
 
-I saw that the script fills *b, d, e* and *f* up to the value you have given in register 8 before running the teleporter. So the new starting point, for this second reverse engineering attempt, is ```c(0, reg8, 1, reg8, reg8, reg8)```. Now let's try running the script with a starting *reg8* of 20,000. I used this high number because there are calculations with modulus 32768 and therefore you should pick a high starting number to really see what is happening in the high regions. You could just run the script and wait a while, but because it fills the stack with 20,000 threes, twos and zeros, you could also just help it a bit and set the following starting points:
+I saw that the script fills *b, d, e* and *f* up to the value you have given in register 8 before running the teleporter. So the new starting point, for this second reverse engineering attempt, is ```c(0, reg8, 1, reg8, reg8, reg8)```. Note *c* is one; which means the stack starts with one four (and will never increase luckily). Now let's try running the script with a starting *reg8* of 20,000. I used this high number because there are calculations with modulus 32768 and therefore you should pick a high starting number to really see what is happening in the high regions. You could just run the script and wait a while, but because it fills the stack with 20,000 threes, twos and zeros, you could also just help it a bit and set the following starting points:
 ```R
 reg1 <- 0
-h <- 20000
-reg2 <- h
+reg8 <- 20000
+reg2 <- reg8
 vw <- NULL
 stack <- c( 6080, 16, 6124, 1, 2952, 25978, 3568, 3599, 2708, 5445, 3, 5491,
             rep(c(4,6056), 1),6067,
-            rep(c(3,6056), h),6067,
-            rep(c(2,6056), h),6067, 
-            rep(c(1,6056), h),6067)
+            rep(c(3,6056), reg8),6067,
+            rep(c(2,6056), reg8),6067, 
+            rep(c(1,6056), reg8),6067)
 ```
 and put 
 ```R
@@ -181,7 +181,33 @@ e <- sum(stack==2)
 f <- sum(stack==1)-1
 vw <- rbind(vw,c(a, b, c, d, e, f)) 
 ``` 
-in the top of the while loop to save the relevant values to a matrix (see the new script [here](https://github.com/zapateros/Synacor-Challenge/blob/master/R/Confirmation_mechanism_jump_start.R)). If you have run it for a while, you should look for the rows where *a* is 0, *b* is 20,000 and *e* is 19999, 19998, 19997 etc. These are the interesting rows, because when *f* is 0, *e* decreases by 1, if *e* is at 0, *d* decreases by 1 and if *d* is at 0, *c* decreases by one. The confirmation mechanism is done when values *c, d, e* and *f* are zero. And then what? I will explain in a bit. First, let's look at what values we are seeing. You should see the following rows somewhere in your matrix *vw*:
+in the top of the while loop to save the relevant values to a matrix (see the new script [here](https://github.com/zapateros/Synacor-Challenge/blob/master/R/Confirmation_mechanism_jump_start.R)). Let's run the script and look at *vw*. Just like I said, it starts with ``` c(0, 20000, 1, 20000, 20000, 20000)```. Now *f* decreases by one every iteration, while *b* increases by one. This goes on for a while and it gets interesting where *b* approaches the value of the modulus (*mdl* is 32768). In the following table some edgecases are shown:
+|a|b|c|d|e|f|
+|:---:|:---:|:---:|:---:|:---:|:---:|
+|0|20000|1|20000|20000|20000|
+|0|20001|1|20000|20000|19999|
+|0|20002|1|20000|20000|19998|
+|.|.|.|.|.|.|
+|0|32766|1|20000|20000|7234|
+|0|32767|1|20000|20000|7233|
+|0|0|1|20000|20000|7232|
+|0|1|1|20000|20000|7231|
+|.|.|.|.|.|.|
+|0|7231|1|20000|20000|1|
+|0|7232|1|20000|20000|0|
+|0|7233|1|20000|19999|0|
+|1|7232|1|20000|19999|1|
+|1|7231|1|20000|19999|2|
+|.|.|.|.|.|.|
+|1|1|1|20000|19999|7232|
+|1|0|1|20000|19999|7233|
+|0|20000|1|20000|19999|7233|
+
+I hope you'll understand you have to interpolate the values when a dot is shown. 
+
+
+
+If you have run it for a while, you should look for the rows where *a* is 0, *b* is 20,000 and *e* is 19999, 19998, 19997 etc. These are the interesting rows, because when *f* is 0, *e* decreases by 1, if *e* is at 0, *d* decreases by 1 and if *d* is at 0, *c* decreases by one. The confirmation mechanism is done when values *c, d, e* and *f* are zero. And then what? I will explain in a bit. First, let's look at what values we are seeing. You should see the following rows somewhere in your matrix *vw*:
 
 |a|b|c|d|e|f|
 |:---:|:---:|:---:|:---:|:---:|:---:|
