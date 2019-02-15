@@ -240,7 +240,7 @@ f(n) = (f(0) + n*(b + 1)) %% mdl    #for n <= b
 ```
 This formula can be used to calculate *f* after *n* repetitions of the recursive formula. When filling in *n* is 20000, *f* is 8256, which agrees with our given value of *f* at *e* is zero. To calculate the next starting point of *e* is then simple:
 
-```
+```R
 e = (b + f(20000) + 1) %% mdl
 ```
 Which is exactly the same value as when we used the recursive formula 20,001 times or the general formula with *n* is 20,001. Therefore we can write a new 'general' formula for *e* when *d* decreases by one:
@@ -255,7 +255,42 @@ Be aware of the fact that the solutions are technically not general but merely p
 ```R
 d = (b + f(0) + e(n)*(b + 1) + 1) %% mdl 
 ```
-Luckily *c* started at one, so this method only has to run twice. At this point we also have optimized the mechanism well enough to have an acceptable runtime of a few seconds. 
+Luckily *c* started at one, so this method only has to run twice. At this point we have optimized the mechanism well enough to have an acceptable runtime. There is a way of 'optimizing' it even further but you can skip this part if you want; I will not use it in the rest of the manual but it might interest you.
+<details>
+<summary>Getting a general solution</summary>
+<br>
+I'm making use of the fact that *b, d, e* and *f* all start at the same value of *reg8*; let's call it *x* for a shorter notation:
+
+```R
+e(1) = (b + f(e(0)) + 1) %% mdl
+     = (b + f(0) + e(n)*(b + 1) + 1) %% mdl 
+     = (x + x + x*(x + 1) + 1) %% mdl
+     = ((x + 1)^2 + x) %% mdl
+     
+e(2) = (b + f(0) + e(1)*(b + 1) + 1) %% mdl 
+     = (x + x + e(1)*(x + 1) + 1) %% mdl 
+     = (x + x + (((x + 1)^2 + x) %% mdl)*(x + 1) + 1) %% mdl 
+     = (x + (x + 1)*((x + 1)^2 + x) + x + 1) %% mdl
+     = ((x + 1)^3 + (x + 1)^2 + x) %% mdl
+     
+e(3) = ((x + 1)^4 + (x + 1)^3 + (x + 1)^2 + x) %% mdl
+
+e(n) = ((x + 1)^(n+1) + (x + 1)^n + .. + (x + 1)^2 + x) %% mdl   
+```
+Remember *x* is your input number *reg8*. It appears to be a summation function, which completely removes the for-loops. However, you are not there yet. Just with like our previous optimizations, when you run the function *d* + 1 times, you calculate the next starting *d*. After that, you run the function again (the new) *d* times. This is equivalent to when *c,d e* and *f* are zero and therefore the mechanism ends. Let's see it in script-form:
+
+```R
+x   <- reg8
+d_0 <- reg8
+mdl <- 32768
+d_1    <- (x + sum((x + 1)^(2:(d_0 + 2))) %% mdl
+result <- (x + sum((x + 1)^(2:(d_1 + 2))) %% mdl
+```
+This is the general solution to this problem. However, standard R doesn't really work with high numbers/exponents and therefore it is sufficient to use the 'less-optimized' version. 
+<details>
+
+
+
 
 
 
