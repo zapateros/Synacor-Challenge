@@ -346,6 +346,7 @@ c("west", "north", "north", "north", "north", "north", "north", "north", "east",
            "west", "north", "north", "take orb")
 ```
 At this point you're in possession of a journal, which you can open with ``` set_mode("manual") ``` and ``` go("look journal")```. This journal contains a couple of hints to solve the puzzle but in my opinion it was pretty straightforward. You are standing in a room, which is part of a 4x4 grid of rooms. You have an orb in your hand and the number 22 is carved on the orb's pedestal. If you walk through the rooms you'll find either a number or a minus-, plus- or a multiplication-sign. When you walk through the rooms you'll add or remove weight of the orb, according to your taken path. On the topright corner of the grid there is a door where you'll find the number 30 carved into it. So the objective of this puzzle is to walk through the grid, starting with a weight of 22 and end up at the door with a weight of 30. The grid is given below:
+
 ![alt text](https://github.com/zapateros/Synacor-Challenge/blob/master/R/other/img/grid_chapter_8.PNG "grid chapter eight")
 
 
