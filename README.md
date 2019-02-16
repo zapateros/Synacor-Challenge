@@ -210,7 +210,7 @@ The procedure, as shown in the above table, contains 40001 iterations (or rows).
 ```R
 f(n+1) = (f(n) + b + 1) %% mdl
 ```
-So everytime *e* decreases by one, the new *f* is given by this recursive formule. Now we already replaced 40001 iterations. Thats a great start. However, the confirmation mechanism will now not take a billion years, but maybe a million or so. So the next step is to check what happens when *d* decreases by one (when *e* is zero). Or in other words: when you run the above recursive formula 20,000 times. There are three ways of looking what happens at this point:
+So everytime *e* decreases by one, the new *f* is given by this recursive formule. Now we already replaced 40001 iterations. That's a great start. However, the confirmation mechanism will now not take a billion years, but maybe a million or so. So the next step is to check what happens when *d* decreases by one (when *e* is zero). Or in other words: when you run the above recursive formula 20,000 times. There are three ways of looking what happens at this point:
 - Run the isolated mechanism script for a very, very long while, until you see a decrease in *d*. It helps to choose a small *reg8* and also make sure you don't fill the matrix *vw* until this point as this will slow down the script drastically.
 - Run the recursive formula 20,000 times and set a new starting point, according to how we set it earlier. You have to start the stack with 20,000 threes, 0 twos and 8256 ones. This last value is of course *f* after 20,000 repetitions of the recursive formula. I suggest you only use this method if you understand what is happening, to prevent trying to analyse a wrong output. Believe me, this happened to me multiple times already.
 - The third option is to run the next [script](https://github.com/zapateros/Synacor-Challenge/blob/master/R/confirmation_mechanism_draft.R) for a while. Note that this is an optimized version of the mechanism, but isn't fully functional. Also it is not cleaned as I found it in my ugly drafts corner. However, it might help you understanding the mechanism a bit, as it shows correctly what happens when *d* is decreasing by one. 
@@ -289,7 +289,49 @@ result <- (x + sum((x + 1)^(2:(d_1 + 2))) %% mdl
 This is the general solution to this problem. However, standard R doesn't really work with high numbers/exponents and therefore it is sufficient to use the 'less-optimized' version. 
 </details>
 
-Let's walk through the script that is able to run the mechanism quickly. 
+
+Let's walk through the script that is able to run the mechanism quickly. First a little recap, because I can imagine you lost track a bit. The confirmation mechanism is a method that loops through several Opcodes to imitate the Ackermann function. In this case this means that the stack is filled with ones, twos and threes (I'm leaving the four for what it is). The confirmation mechanism finally ends when all these numbers are removed from the stack again. The amount of ones, twos and threes that the stack starts with is depending on your input *register 8*. The removal process of these numbers is very time consuming and therefore it is necessary to decode and optimize it. Luckily most of the loops can be replaced with some relatively simple general formulas (if you understand the mechanism). In other words: it is possible to bypass most of the loops. A small note: it is even possible to replace all the loops but you'll end up with a summation function with high exponents, which in its turn is not efficient in R. Instead of working with an object that is filled with numbers (the stack), I isolated the problem by creating six variables *a,b,c,d,e* and *f*, which represent *reg1*, *reg2* and the amount of fours, threes, twos and ones in the stack respectively. 
+
+Like said, the starting point is when *b,d,e* and *f* are set to your input *reg8*, which is still 20,000 in the example. Every time *d* decreases by one, the new starting point of *e* is given by (like stated earlier):
+
+```R
+e(n+1) = (b + f(0) + e(n)*(b + 1) + 1) %% mdl     #for n < d
+```
+So this function should be repeated *d* times for *c* to decrease by one:
+
+```R
+mdl <- 32768
+reg8 <- 20000
+b    <- reg8
+d    <- reg8
+e    <- reg8
+f    <- reg8
+
+while(d>0){
+  e <- (b + ((b+1)*e + f) + 1) %% mdl
+  d <- d - 1
+}
+```
+If you run this script, *d* is now zero and then the new starting point for *d* (when *c* decreases by one) can be calculated by:
+
+```R
+d <- (b + ((b+1)*e + f) + 1) %% mdl
+e <- reg8
+```
+Note that these functions are all discussed earlier but now implemented in R. At this point the new starting points are ``` c(a, b, c, d, e, f) == c(0, 20000, 0, 1665, 20000, 20000) ```. Now *d,e* and *f* have to be eliminated by following the same procedure (the loop over *d*). At this point you'll end up with ``` c(0, 20000, 0, 0, 31969, 20000) ```. Now to eliminate *e* we run the function (again as discussed earlier):
+
+```R
+f(e(0)) = (f(0) + e(0)*(b + 1)) %% mdl == 29985
+```
+So at this point we are left with ``` c(0, 20000, 0, 0, 0, 29985) ``` and we are almost there! Remember what is happening now? Everytime *f* decreases by one, *b* increases by one. Keeping in mind the modulo, when *f* is zero, *b* ends at 17217. And we're done! Almost. At this point the stack is exactly the same as where it started and *register b* is 17217. Now here's the misleading part: it looks like *register 1* (or *reg1* or *a*) is zero, but that is because we set the saving point at a spot everytime *i* is 6028. However, you can see in the last loop before it ends,``` reg1 <- (reg2 + 1) %% mdl``` and therefore in reality *register 1* is actually 17218. Now *i* is 5492, as it is set to the last value of the stack plus one, and this runs Opcode 4. This checks the value of *register 1* is equal to 6. This turned out to be the magic number where the *vm* continues on the right path. So this is the last ingredient to solve the puzzle! 
+
+We have to find the correct value of *register 8* which leads to a *register 1* of six. Reverse the calculation and start at six is not possible, so we have to run the optimized mechanism with different input values until we find an output of six. I also tried to completely bypass the confirmation mechanism and set *register 1* to six and start the *vm* behind this mechanism again. However, not much later it also checks the value of *register 8*. Therefore it is the combination of register 1 and 8 that should be correct, for the teleporter to run smoothly. I know what you are probably thinking: instead of puzzling out the confirmation mechanism, you could just try to force every value of register 8 and check when you get a different outcome (or a code). Well, I have news for you buddy: I tried. And it didn't work because obviously the creator also thought of it. For every register 8 you'll set, the outcome is exactly the same, with one small difference: every time you get another code. The only way to find out if your code is correct, is to manually fill it in at the synacor website. So there is no other way than solving the mechanism. Luckily we already have solved it! See [script](  
+
+
+
+
+
+
 
 
 And it starts over again, by decreasing *e* until it is zero. I hope you'll understand the rythm a little bit. To really understand what is happening, look at border cases. I also added a faster 'optimized' [script](https://github.com/zapateros/Synacor-Challenge/blob/master/R/confirmation_mechanism_draft.R) to create a matrix like in the above table. Note that this is certainly not a fully working script and it also is not cleaned (I found it in my ugly drafts corner and it might help you understanding the mechanism a bit). 
