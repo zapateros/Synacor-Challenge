@@ -288,6 +288,7 @@ result <- (x + sum((x + 1)^(2:(d_1 + 2))) %% mdl
 ```
 This is the general solution to this problem. However, standard R doesn't really work with high numbers/exponents and therefore it is sufficient to use the 'less-optimized' version. 
 </details>
+
 ---
 
 Let's walk through the script that is able to run the mechanism quickly. First a little recap, because I can imagine you lost track a bit. The confirmation mechanism is a method that loops through several Opcodes to imitate the Ackermann function. In this case this means that the stack is filled with ones, twos and threes (I'm leaving the four for what it is). The confirmation mechanism finally ends when all these numbers are removed from the stack again. The amount of ones, twos and threes that the stack starts with is depending on your input *register 8*. The removal process of these numbers is very time consuming and therefore it is necessary to decode and optimize it. Luckily most of the loops can be replaced with some relatively simple general formulas (if you understand the mechanism). A small note: it is even possible to replace all the loops but you'll end up with a summation function with high exponents, which in its turn is not efficient in R. Instead of working with an object that is filled with numbers (the stack), I isolated the problem by creating six variables *a,b,c,d,e* and *f*, which represent *reg1*, *reg2* and the amount of fours, threes, twos and ones in the stack respectively. 
