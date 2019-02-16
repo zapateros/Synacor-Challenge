@@ -288,7 +288,7 @@ result <- (x + sum((x + 1)^(2:(d_1 + 2))) %% mdl
 ```
 This is the general solution to this problem. However, standard R doesn't really work with high numbers/exponents and therefore it is sufficient to use the 'less-optimized' version. 
 </details>
-
+---
 
 Let's walk through the script that is able to run the mechanism quickly. First a little recap, because I can imagine you lost track a bit. The confirmation mechanism is a method that loops through several Opcodes to imitate the Ackermann function. In this case this means that the stack is filled with ones, twos and threes (I'm leaving the four for what it is). The confirmation mechanism finally ends when all these numbers are removed from the stack again. The amount of ones, twos and threes that the stack starts with is depending on your input *register 8*. The removal process of these numbers is very time consuming and therefore it is necessary to decode and optimize it. Luckily most of the loops can be replaced with some relatively simple general formulas (if you understand the mechanism). A small note: it is even possible to replace all the loops but you'll end up with a summation function with high exponents, which in its turn is not efficient in R. Instead of working with an object that is filled with numbers (the stack), I isolated the problem by creating six variables *a,b,c,d,e* and *f*, which represent *reg1*, *reg2* and the amount of fours, threes, twos and ones in the stack respectively. 
 
@@ -346,9 +346,7 @@ c("west", "north", "north", "north", "north", "north", "north", "north", "east",
 ```
 At this point you're in possession of a journal, which you can open with ``` set_mode("manual") ``` and ``` go("look journal")```. This journal contains a couple of hints to solve the puzzle but in my opinion it was pretty straightforward. You are standing in a room, which is part of a 4x4 grid of rooms. You have an orb in your hand and the number 22 is carved on the orb's pedestal. If you walk through the rooms you'll find either a number or a minus-, plus- or a multiplication-sign. When you walk through the rooms you'll add or remove weight of the orb, according to your taken path. On the topright corner of the grid there is a door where you'll find the number 30 carved into it. So the objective of this puzzle is to walk through the grid, starting with a weight of 22 and end up at the door with a weight of 30. The grid is given below:
 
-|<span style="font-weight:normal">heading</span>|
-|:---------------------------------------------:|
-|              content is king                  |
+
 
 
 
