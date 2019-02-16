@@ -277,7 +277,9 @@ e(3) = ((x + 1)^4 + (x + 1)^3 + (x + 1)^2 + x) %% mdl
 
 e(n) = ((x + 1)^(n+1) + (x + 1)^n + .. + (x + 1)^2 + x) %% mdl   
 ```
-Remember *x* is your input number *reg8*. It appears to be a summation function, which completely removes the for-loops. However, you are not there yet. Just with like our previous optimizations, when you run the function *d* + 1 times, you calculate the next starting *d*. After that, you run the function again (the new) *d* times. This is equivalent to when *c,d e* and *f* are zero and therefore the mechanism ends. Let's see it in script-form:
+Remember *x* is your input number *reg8*. It appears to be a summation function, which completely removes the for-loops. However, you are not there yet. Just with like our previous optimizations, when you run the function *d* + 1 times, you calculate the next starting *d*. After that, you run the function again (the new) *d* times. This is equivalent to when *c,d e* and *f* are zero and therefore the mechanism ends. Let's see it in formula- and script-form:
+
+![alt text](https://github.com/zapateros/Synacor-Challenge/blob/master/R/other/img/general_solution_chapter_7.PNG "solution chapter seven")
 
 ```R
 x   <- reg8
