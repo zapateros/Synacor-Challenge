@@ -350,6 +350,16 @@ At this point you're in possession of a journal, which you can open with ``` set
 
 ![alt text](https://github.com/zapateros/Synacor-Challenge/blob/master/R/other/img/grid_chapter_8.PNG "grid chapter eight")
 
+You start at the bottom left (green) and should end up at the top right (red). Obviously there are an infinite amount of paths you could take but the door only opens when you take the shortest path. There are two ways to solve this puzzle:
+
+- A shortest path algorithm
+- Solve it by hand
+
+To choose the right method, I first tried some paths by hand. I quickly solved it in twenty steps and it was clear there was a shorter possible path: the hourglass was empty already. Knowing this, I decided to just do it by hand. If it was clear the path would be very long, as I was expecting, I would turn to an algorithm. I solved it by taking the following (12) steps:
+```R
+c("north", "east", "east", "north", "west", "south", "east", "east", "west", "north", "north", "east")
+```
+The vaultdoor can be opened now and there you'll find a large pile of treasure and a mirror. Take the mirror and use it. Now you'll see the last code. The only thing left to do is to mirror the given code and fill it in at the website. You are done! (8/8)
 
 
 
