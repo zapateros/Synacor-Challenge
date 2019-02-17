@@ -278,7 +278,7 @@ e[n] = ((x + 1)^(n+1) + (x + 1)^n + .. + (x + 1)^2 + x) %% mdl
 ```
 Remember *x* is your input number *reg8*. It appears to be a summation function, which completely removes the for-loops. However, you are not there yet. Just like with our previous optimizations, when you run the function *d* + 1 times, you calculate the next starting *d*. After that, you run the function again (the new) *d* times. At that point it is equivalent to when *c,d e* and *f* are zero and therefore the mechanism ends. Let's see it in formula- and script-form:
 
-![alt text](https://github.com/zapateros/Synacor-Challenge/blob/master/R/images/general_solution_chapter_7.PNG "solution chapter seven")
+![alt text](https://github.com/zapateros/Synacor-Challenge/blob/master/images/general_solution_chapter_7.PNG "solution chapter seven")
 
 ```R
 x   <- reg8
@@ -348,7 +348,7 @@ c("west", "north", "north", "north", "north", "north", "north", "north", "east",
 ```
 At this point you're in possession of a journal, which you can open with ``` set_mode("manual") ``` and ``` go("look journal")```. This journal contains a couple of hints to solve the puzzle but in my opinion it was pretty straightforward. You are standing in a room, which is part of a 4x4 grid of rooms. You have an orb in your hand and the number 22 is carved on the orb's pedestal. If you walk through the rooms you'll find either a number or a minus-, plus- or a multiplication-sign. So while walking through the rooms you'll add or remove weight of the orb, according to your taken path. On the topright corner of the grid there is a door where you'll find the number 30 carved into it. So the objective of this puzzle is to walk through the grid, starting with a weight of 22 and end up at the door with a weight of 30. The grid is given below:
 
-![alt text](https://github.com/zapateros/Synacor-Challenge/blob/master/R/images/grid_chapter_8.PNG "grid chapter eight")
+![alt text](https://github.com/zapateros/Synacor-Challenge/blob/master/images/grid_chapter_8.PNG "grid chapter eight")
 
 You start at the bottom left (green) and should end up at the top right (red). Obviously there are an infinite amount of paths you could take but the door only opens when you take the shortest path. There are two ways to solve this puzzle:
 
