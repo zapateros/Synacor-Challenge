@@ -93,7 +93,7 @@ Basically what you are doing is call Opcode 20 manually, with your choice as the
 And there it is, code 4/8! 
 
 ## Chapter 5: Manual or automatic?
-To earn the next code, you have to play a text-based adventure game. **Beware: I am not giving hints about what steps you should take; I am giving you the fastest way in completing the game straight-up.** I really advise you to just play the game, as it is quite amusing. You can just use the *go* function to input your concecutive choices. However, especially when starting over and over again, you really want to write multiple inputs at once. Therefore I add a the option to input your choices manually (one at a time) or automatic (multiple at once). The mode starts at "auto" but you can switch by calling ```set_mode("manual")```. If the mode is "auto", the function *go* eats a vector of characters, called *input_chars*. The input could be something like this:
+To earn the next code, you have to play a text-based adventure game. **Beware: I am not giving hints about what steps you should take; I am giving you the fastest way in completing the game straight-up.** I really advise you to just play the game, as it is quite amusing. You can just use the *go* function to input your concecutive choices. However, especially when starting over and over again, you really want to write multiple inputs at once. Therefore I add a the option to input your choices manually (one at a time) or automatic (multiple at once). The mode starts at "auto" but you can switch it by calling ```set_mode("manual")```. If the mode is "auto", the function *go* eats a vector of characters, called *input_chars*. The input could be something like this:
 ```R
 inputs <-c("doorway", "north", "north", "bridge")
 input_chars <- unlist(strsplit(paste0(inputs,"0"),""))
@@ -120,7 +120,7 @@ Also, near this room you can find 5 coins:
 - Concave coin
 - Shiny coin
 
-And lastly, north of the formula-room, there is a door with 5 slots where you can put the coins into. So in short: A door with five slots, five coins and a formula with five variables. Easy peasy right? For the slow ones among us: you have to insert the coins in the right order to solve the formula, after which the door opens. Every coin has its value, which you can check if you put it into the door-slot and go back to the formula-room. There the values of the concecutive inserted coins are written in the formula. The coins are (respectively to the list) worth: 3, 2, 9, 7 and 5. Now it's up to you to find the correct order, for which it solves the formula. 
+And lastly, north of the formula-room, there is a door with 5 slots where you can put the coins into. So in short: a door with five slots, five coins and a formula with five variables. Easy peasy right? For the slow ones among us: you have to insert the coins in the right order to solve the formula, after which the door opens. Every coin has its value, which you can check if you put it into the door-slot and go back to the formula-room. There the values of the concecutive inserted coins are written in the formula. This is probably where the input-files, and so the values of the coins, might differ. My coins are (respectively to the list) worth: 3, 2, 9, 7 and 5. Now it's up to you to find the correct order, for which it solves the formula. 
 
 I use a simple pragmatic method to find the solution to the formula with the given values. I just brute force every possible combination:
 ```R
@@ -158,7 +158,7 @@ You can read this table as follows: the virtual machine starts at *i* is 6028 an
 
 I ran the script and saved the length of the stack every iteration and I saw a wave pattern. When I looked closer to the stack I saw it was filled with threes, twos and zeros. Therefore my instinct was to count occurrences of these particular numbers and saw a pattern. At this point I started looking at the problem from a different perspective: I created six variables *a,b,c,d,e* and *f*, which represent *reg1*, *reg2* and the amount of fours, threes, twos and ones in the stack respectively. Important is to **not** count the one and three that were in the stack at the beginning. When running the script while saving these variables every iteration for a while (it will practically never end), you'll see what happens. Especially when you change register 8, you should be able to see what happens. 
 
-I saw that the script fills *b, d, e* and *f* up to the value you have given in register 8 before running the teleporter. So the new starting point, for this second reverse engineering attempt, is ```c(0, reg8, 1, reg8, reg8, reg8)```. Note *c* is one; which means the stack starts with one four (and will never increase luckily). Now let's try running the script with a starting *reg8* of 20,000. I used this high number because there are calculations with modulus 32768 and therefore you should pick a high starting number to really see what is happening in the high regions. You could just run the script and wait a while, but because it fills the stack with 20,000 threes, twos and zeros, you could also just help it a bit and set the following starting points:
+I saw that the script fills *b, d, e* and *f* up to the value you have given in register 8 before running the teleporter. So a nice starting point, for this second reverse engineering attempt, is ```c(a, b, c, d, e, f) == c(0, reg8, 1, reg8, reg8, reg8)```. Note *c* is one; which means the stack starts with one four (and will never increase luckily). Now let's try running the script with a starting *reg8* of 20,000. I used this high number because there are calculations with modulus 32768 and therefore you should pick a high starting number to really see what is happening in the high regions. You could just run the script and wait a while, but because we know it will fill the stack with 20,000 threes, twos and zeros, you could also just help it a bit and set the following starting points:
 ```R
 reg1 <- 0
 reg8 <- 20000
@@ -180,7 +180,7 @@ e <- sum(stack==2)
 f <- sum(stack==1)-1
 vw <- rbind(vw,c(a, b, c, d, e, f)) 
 ``` 
-in the top of the while loop to save the relevant values to a matrix (see the new script [here](https://github.com/zapateros/Synacor-Challenge/blob/master/R/Confirmation_mechanism_jump_start.R)). Let's run the script and look at *vw*. Just like I said, it starts with ``` c(0, 20000, 1, 20000, 20000, 20000)```. Now *f* decreases by one every iteration, while *b* increases by one. This goes on for a while and it gets interesting where *b* approaches the value of the modulo (*mdl* is 32768). In the following table some edgecases are shown (interpolate cells with a dot):
+in the top of the while loop to save the relevant values to a matrix (see the new script [here](https://github.com/zapateros/Synacor-Challenge/blob/master/R/Confirmation_mechanism_jump_start.R)). Let's run the script for a while again and look at *vw*. Just like I said, it starts with ``` c(0, 20000, 1, 20000, 20000, 20000)```. Now *f* decreases by one every iteration, while *b* increases by one. This goes on for a while and it gets interesting where *b* approaches the value of the modulo (*mdl* is 32768). In the following table some relevant edgecases are shown. Note that every row represents an iteration of the while loop (interpolate cells with a dot):
 
 |a|b|c|d|e|f|
 |:---:|:---:|:---:|:---:|:---:|:---:|
@@ -203,14 +203,14 @@ in the top of the while loop to save the relevant values to a matrix (see the ne
 |1|0|1|20000|19999|7233|
 |0|20000|1|20000|19999|7233|
 
-As can be seen here is that *f* decreases by one, until it hits zero. Meanwhile, until this point, *b* increases by one and starts at zero when the value of the modulo is reached. When *f* is zero, *e* decreases by one and *b* increases by one. From this point *f* starts increasing again, while *b* is decreasing. When *b* reaches zero, it is set to the initial value of *reg8* again. From here it starts the same procedure again. So in the end (of this one procedure) *e* is decreased by one and *f* has a new starting point. If *e* is zero, *d* decreases by one and when *d* is zero, *c* decreases by one. The whole mechanism stops when values *c, d, e* and *f* are all zero. And then what? I will explain in a bit. First let's see how we can speed up this procedure a bit, step by step. 
+As can be seen here, *f* decreases by one until it hits zero. Meanwhile, until this point, *b* increases by one and starts at zero when the value of the modulo is reached. When *f* is zero, *e* decreases by one and *b* increases by one. From this point *f* starts increasing again, while *b* is decreasing. When *b* reaches zero, it is set to the initial value of *reg8* again. From here it starts the same procedure again. So in the end (of this one procedure) *e* is decreased by one and *f* has a new starting point. If *e* is zero, *d* decreases by one and when *d* is zero, *c* decreases by one. The whole mechanism stops when values *c, d, e* and *f* are all zero. And then what? I will explain in a bit. First let's see how we can speed up this procedure a bit, step by step. 
 
-The procedure, as shown in the above table, contains 40001 iterations (or rows). However, it is easy to see that new starting point of *f* is equivalent to:
+The procedure, as shown in the above table, contains 27236 iterations (or rows). However, it is easy to see that the new starting point of *f* is equivalent to:
 ```R
-f(n+1) = (f(n) + b + 1) %% mdl
+f[n+1] = (f[n] + b + 1) %% mdl
 ```
-So everytime *e* decreases by one, the new *f* is given by this recursive formule. Now we already replaced 40001 iterations. That's a great start. However, the confirmation mechanism will now not take a billion years, but maybe a million or so. So the next step is to check what happens when *d* decreases by one (when *e* is zero). Or in other words: when you run the above recursive formula 20,000 times. There are three ways of looking what happens at this point:
-- Run the isolated mechanism script for a very, very long while, until you see a decrease in *d*. It helps to choose a small *reg8* and also make sure you don't fill the matrix *vw* until this point as this will slow down the script drastically.
+where *n* represents the occurrence where *e* decreases by one. So everytime *e* decreases by one, the new *f* is given by this recursive formule. Now we already replaced 27236 iterations. That's a great start. However, the confirmation mechanism will now not take a billion years, but maybe a million or so. So the next step is to check what happens when *d* decreases by one (when *e* is zero). Or in other words: when you run the above recursive formula 20,000 times. There are three ways of looking what happens at this point:
+- Run the isolated mechanism script for a very, very long time, until you see a decrease in *d*. It helps to choose a small *reg8* and also make sure you don't fill the matrix *vw* until this point as this will slow down the script drastically.
 - Run the recursive formula 20,000 times and set a new starting point, according to how we set it earlier. You have to start the stack with 20,000 threes, 0 twos and 8256 ones. This last value is of course *f* after 20,000 repetitions of the recursive formula. I suggest you only use this method if you understand what is happening, to prevent trying to analyse a wrong output. Believe me, this happened to me multiple times already.
 - The third option is to run the next [script](https://github.com/zapateros/Synacor-Challenge/blob/master/R/confirmation_mechanism_draft.R) for a while. Note that this is an optimized version of the mechanism, but isn't fully functional. Also it is not cleaned as I found it in my ugly drafts corner. However, it might help you understanding the mechanism a bit, as it shows correctly what happens when *d* is decreasing by one. 
 
@@ -226,18 +226,18 @@ I prefer the second method, as this will give you all the information at the low
 |0|20000|1|20000|0|8256|
 |0|20000|1|19999|28257|20000|
 
-Note that the second row is similar to the last row of the previous table. So the values of *f* are also given when running the recursive function. As you can see, when *e* is zero, *f* is 8256. In the next row, *d* is decreased by one and the new starting *e* is 28257. *f* starts at the *b* (or the set *reg8*) again. So our aim is to instantly calculate the new starting point of *e* when *d* is decreasing by one. In this way we bypass a half a billion loops (estimated). Given the recursive formula, we can expand to a general formula:
+Note that the second row is similar to the last row of the previous table. So the values of *f* are also given when running the recursive function. As you can see, when *e* is zero, *f* is 8256. In the next row, *d* is decreased by one and the new starting *e* is 28257. *f* starts at the *b* (or the set *reg8*) again. So our aim is to instantly calculate the new starting point of *e* when *d* is decreasing by one. In this way we bypass millions of loops. Given the recursive formula, we can expand to a general formula:
 
 ```R
-f(1) = (f(0) + b + 1) %% mdl
-f(2) = (f(1) + b + 1) %% mdl   
-     = (((f(0) + b + 1) %% mdl) + b + 1) %% mdl    
-     = (f(0) + b + 1 + b + 1) %% mdl   
-     = (f(0) + 2*b + 2*1) %% mdl
-     = (f(0) + n*b + n) %% mdl
-f(n) = (f(0) + n*(b + 1)) %% mdl    #for n <= b  
+f[1] = (f[0] + b + 1) %% mdl
+f[2] = (f[1] + b + 1) %% mdl   
+     = (((f[0] + b + 1) %% mdl) + b + 1) %% mdl    
+     = (f[0] + b + 1 + b + 1) %% mdl   
+     = (f[0] + 2*b + 2*1) %% mdl
+     = (f[0] + n*b + n) %% mdl
+f[n] = (f[0] + n*(b + 1)) %% mdl    #for n <= b  
 ```
-This formula can be used to calculate *f* after *n* repetitions of the recursive formula. When filling in *n* is 20000, *f* is 8256, which agrees with our given value of *f* at *e* is zero. To calculate the next starting point of *e* is then simple:
+with f[0] the first value of *f*.This formula can be used to calculate *f* after *n* repetitions of the recursive formula. When filling in *n* is 20000, *f* is 8256, which agrees with our given value of *f* at *e* is zero. To calculate the next starting point of *e* is then simple:
 
 ```R
 e = (b + f(20000) + 1) %% mdl
