@@ -359,7 +359,4 @@ To choose the right method, I first tried some paths by hand. I quickly solved i
 ```R
 c("north", "east", "east", "north", "west", "south", "east", "east", "west", "north", "north", "east")
 ```
-The vaultdoor can be opened now and there you'll find a large pile of treasure and a mirror. Take the mirror and use it. Now you'll see the last code. The only thing left to do is to mirror the given code and fill it in at the website. You are done! (8/8)
-
-
-
+The vaultdoor can be opened now and there you'll find a large pile of treasure and a mirror. Take the mirror and use it. Now you'll see the last code. The only thing left to do is to mirror the given code and fill it in at the website. You are done (8/8)! See the [script](https://github.com/zapateros/Synacor-Challenge/blob/master/R/chapter_8.R)
