@@ -154,7 +154,7 @@ First you have to find where the confirmation mechanism starts and what the cond
 |6062|9|reg1 <- (reg1 + 32767) %% mdl <br /> Go to 6066|
 |6066|17|Add 6067 to stack <br /> Go to 6028|
 
-You can read this table as follows: the virtual machine starts at *i* is 6028 and *reg1* is not zero. Therefore *i* jumps to 6036. *reg2* also is not zero and so *i* jumps to 6049. Now *reg1* (4) is added to the stack  and *i* jumps to 6051. The mechanism loops through these values of *i* until *i* is 6035 and the last value of the stack is something else than 6067, 6047 or 6056. We'll see later that this value turns out to be 5491. At this point it is important to note that registers 3 to 7 (and *lbe*) are not affected by the mechanism. When you write a [script](https://github.com/zapateros/Synacor-Challenge/blob/master/R/confirmation_mechanism.R) that runs this mechanism isolated, you'll see that there is an interaction between *reg1*, *reg2*, *reg8* and the *stack*. It was not until after I completed the challenge when I read that it is an adaptation of the Ackermann function, but in all honesty, I don't think knowing this would have helped me during the challenge. 
+You can read this table as follows: the virtual machine starts at *i* is 6028 and *reg1* is not zero. Therefore *i* jumps to 6036. *reg2* also is not zero and so *i* jumps to 6049. Now *reg1* (4) is added to the stack  and *i* jumps to 6051. The mechanism loops through these values of *i* until *i* is 6035 and the last value of the stack is something else than 6067, 6047 or 6056. We'll see later that this value turns out to be 5491. At this point it is important to note that registers 3 to 7 (and *lbe*) are not affected by the mechanism. When you write a [script](https://github.com/zapateros/Synacor-Challenge/blob/master/R/confirmation mechanism/confirmation_mechanism.R) that runs this mechanism isolated, you'll see that there is an interaction between *reg1*, *reg2*, *reg8* and the *stack*. It was not until after I completed the challenge when I read that it is an adaptation of the Ackermann function, but in all honesty, I don't think knowing this would have helped me during the challenge. 
 
 I ran the script and saved the length of the stack every iteration and I saw a wave pattern. When I looked closer to the stack I saw it was filled with threes, twos and zeros. Therefore my instinct was to count occurrences of these particular numbers and saw a pattern. At this point I started looking at the problem from a different perspective: I created six variables *a,b,c,d,e* and *f*, which represent *reg1*, *reg2* and the amount of fours, threes, twos and ones in the stack respectively. Important is to **not** count the one and three that were in the stack at the beginning. When running the script while saving these variables every iteration for a while (it will practically never end), you'll see what happens. Especially when you change register 8, you should be able to see what happens. 
 
@@ -237,48 +237,48 @@ f[2] = (f[1] + b + 1) %% mdl
      = (f[0] + n*b + n) %% mdl
 f[n] = (f[0] + n*(b + 1)) %% mdl    #for n <= b  
 ```
-with f[0] the first value of *f*.This formula can be used to calculate *f* after *n* repetitions of the recursive formula. When filling in *n* is 20000, *f* is 8256, which agrees with our given value of *f* at *e* is zero. To calculate the next starting point of *e* is then simple:
+with f[0] the first value of *f*. This formula can be used to calculate *f* after *n* repetitions of the recursive formula. When filling in *n* is 20000, *f* is 8256, which agrees with our given value of *f* at *e* is zero. To calculate the next starting point of *e* is then simple:
 
 ```R
-e = (b + f(20000) + 1) %% mdl
+e = (b + f[20000] + 1) %% mdl
 ```
 Which is exactly the same value as when we used the recursive formula 20,001 times or the general formula with *n* is 20,001. Therefore we can write a new 'general' formula for *e* when *d* decreases by one:
 
 ```R
-e(n+1) = (b + f(e(n)) + 1) %% mdl
-       = (b + (f(0) + e(n)*(b + 1)) %% mdl + 1) %% mdl
-       = (b + f(0) + e(n)*(b + 1) + 1) %% mdl     #for n < d
+e[m+1] = (b + f[e[m]] + 1) %% mdl
+       = (b + (f[0] + e[m]*(b + 1)) %% mdl + 1) %% mdl
+       = (b + f[0] + e[m]*(b + 1) + 1) %% mdl     #for m < d
 ```
-Be aware of the fact that the solutions are technically not general but merely pragmatic optimizations, which could lead to a general solution. With the above formula we can calculate every next starting point of *e* when *d* decreases by one, until *d* is zero. When *d* is zero, *c* decreases by one and the new starting point of *d* is:
+where *m* represents the occurrence where *d* decreases by one. Be aware of the fact that the solutions are technically not general but merely pragmatic optimizations, which could lead to a general solution. With the above formula we can calculate every next starting point of *e* when *d* decreases by one, until *d* is zero. When *d* is zero, *c* decreases by one and the new starting point of *d* is:
 
 ```R
-d = (b + f(0) + e(n)*(b + 1) + 1) %% mdl 
+d = (b + f[0] + e[k]*(b + 1) + 1) %% mdl 
 ```
-Luckily *c* started at one, so this method only has to run twice. At this point we have optimized the mechanism well enough to have an acceptable runtime. There is a way of 'optimizing' it even further but you can skip this part if you want; I will not use it in the rest of the manual but it might interest you.
+where e[k] is the value of *e* when *d* is zero. Luckily *c* started at one, so this method only has to run twice. At this point we have optimized the mechanism well enough to have an acceptable runtime. There is a way of 'optimizing' it even further but you can skip this part if you want; I will not use it in the rest of the manual but it might interest you.
 <details>
 <summary>Finding a general solution</summary>
 <br>
 I'm making use of the fact that *b, d, e* and *f* all start at the same value of *reg8*; let's call it *x* for a shorter notation:
 
 ```R
-e(1) = (b + f(e(0)) + 1) %% mdl
-     = (b + f(0) + e(n)*(b + 1) + 1) %% mdl 
+e[1] = (b + f[e[0]] + 1) %% mdl
+     = (b + f[0] + e[n]*(b + 1) + 1) %% mdl 
      = (x + x + x*(x + 1) + 1) %% mdl
      = ((x + 1)^2 + x) %% mdl
      
-e(2) = (b + f(0) + e(1)*(b + 1) + 1) %% mdl 
-     = (x + x + e(1)*(x + 1) + 1) %% mdl 
+e[2] = (b + f[0[ + e[1]*(b + 1) + 1) %% mdl 
+     = (x + x + e[1]*(x + 1) + 1) %% mdl 
      = (x + x + (((x + 1)^2 + x) %% mdl)*(x + 1) + 1) %% mdl 
      = (x + (x + 1)*((x + 1)^2 + x) + x + 1) %% mdl
      = ((x + 1)^3 + (x + 1)^2 + x) %% mdl
      
-e(3) = ((x + 1)^4 + (x + 1)^3 + (x + 1)^2 + x) %% mdl
+e[3] = ((x + 1)^4 + (x + 1)^3 + (x + 1)^2 + x) %% mdl
 
-e(n) = ((x + 1)^(n+1) + (x + 1)^n + .. + (x + 1)^2 + x) %% mdl   
+e[n] = ((x + 1)^(n+1) + (x + 1)^n + .. + (x + 1)^2 + x) %% mdl   
 ```
-Remember *x* is your input number *reg8*. It appears to be a summation function, which completely removes the for-loops. However, you are not there yet. Just with like our previous optimizations, when you run the function *d* + 1 times, you calculate the next starting *d*. After that, you run the function again (the new) *d* times. This is equivalent to when *c,d e* and *f* are zero and therefore the mechanism ends. Let's see it in formula- and script-form:
+Remember *x* is your input number *reg8*. It appears to be a summation function, which completely removes the for-loops. However, you are not there yet. Just like with our previous optimizations, when you run the function *d* + 1 times, you calculate the next starting *d*. After that, you run the function again (the new) *d* times. At that point it is equivalent to when *c,d e* and *f* are zero and therefore the mechanism ends. Let's see it in formula- and script-form:
 
-![alt text](https://github.com/zapateros/Synacor-Challenge/blob/master/R/other/img/general_solution_chapter_7.PNG "solution chapter seven")
+![alt text](https://github.com/zapateros/Synacor-Challenge/blob/master/R/images/general_solution_chapter_7.PNG "solution chapter seven")
 
 ```R
 x   <- reg8
@@ -292,12 +292,12 @@ This is the general solution to this problem. However, standard R doesn't really
 
 ---
 
-Let's walk through the script that is able to run the mechanism quickly. First a little recap, because I can imagine you lost track a bit. The confirmation mechanism is a method that loops through several Opcodes to imitate the Ackermann function. In this case this means that the stack is filled with ones, twos and threes (I'm leaving the four for what it is). The confirmation mechanism finally ends when all these numbers are removed from the stack again. The amount of ones, twos and threes that the stack starts with is depending on your input *register 8*. The removal process of these numbers is very time consuming and therefore it is necessary to decode and optimize it. Luckily most of the loops can be replaced with some relatively simple general formulas (if you understand the mechanism). A small note: it is even possible to replace all the loops but you'll end up with a summation function with high exponents, which in its turn is not efficient in R. Instead of working with an object that is filled with numbers (the stack), I isolated the problem by creating six variables *a,b,c,d,e* and *f*, which represent *reg1*, *reg2* and the amount of fours, threes, twos and ones in the stack respectively. 
+Let's walk through the script that is able to run the mechanism quickly. First a little recap, because I can imagine you lost track a bit. The confirmation mechanism is a method that loops through several Opcodes to imitate the Ackermann function. In this case this means that the stack is filled with ones, twos and threes (and one four). The confirmation mechanism finally ends when all these numbers are removed from the stack again. The amount of ones, twos and threes the stack initially fills up with, is depending on your input *register 8*. The removal process of these numbers is very time consuming and therefore it is necessary to decode and optimize it. Luckily most of the loops can be replaced with some relatively simple general formulas (if you understand the mechanism). A small note: it is even possible to replace all the loops but you'll end up with a summation function with high exponents, which in its turn is not efficient in R. Also, instead of working with an object that is filled with numbers (the stack), I isolated the problem by creating six variables *a,b,c,d,e* and *f*, which represent *reg1*, *reg2* and the amount of fours, threes, twos and ones in the stack respectively. 
 
 Like said, the starting point is when *b,d,e* and *f* are set to your input *reg8*, which is still 20,000 in the example. Every time *d* decreases by one, the new starting point of *e* is given by (like stated earlier):
 
 ```R
-e(n+1) = (b + f(0) + e(n)*(b + 1) + 1) %% mdl     #for n < d
+e[m+1] = (b + f[0[ + e[m]*(b + 1) + 1) %% mdl     #for m < d
 ```
 So this function should be repeated *d* times for *c* to decrease by one:
 
@@ -323,7 +323,7 @@ e <- reg8
 Note that these functions are all discussed earlier but now implemented in R. At this point the new starting points are ``` c(a, b, c, d, e, f) == c(0, 20000, 0, 1665, 20000, 20000) ```. Now *d,e* and *f* have to be eliminated by following the same procedure (the loop over *d*). At this point you'll end up with ``` c(0, 20000, 0, 0, 31969, 20000) ```. Now to eliminate *e* we run the function (again as discussed earlier):
 
 ```R
-f(e(0)) = (f(0) + e(0)*(b + 1)) %% mdl == 29985
+f[e[0]] = (f[0] + e[0]*(b + 1)) %% mdl == 29985
 ```
 So at this point we are left with ``` c(0, 20000, 0, 0, 0, 29985) ``` and we are almost there! Remember what is happening now? Everytime *f* decreases by one, *b* increases by one. Keeping in mind the modulo, when *f* is zero, *b* ends at 17217. And we're done! Almost. At this point the stack is exactly the same as where it started and *register b* is 17217. Now here's the misleading part: it looks like *register 1* (or *reg1* or *a*) is zero, but that is because we set the saving point at a spot everytime *i* is 6028. However, you can see in the last loop before it ends,``` reg1 <- (reg2 + 1) %% mdl``` and therefore in reality *register 1* is actually 17218. Now *i* is 5492, as it is set to the last value of the stack plus one, and this runs Opcode 4. This checks the value of *register 1* is equal to 6. This turned out to be the magic number where the *vm* continues on the right path. So this is the last ingredient to solve the puzzle! 
 
@@ -337,18 +337,18 @@ regs <-  c(6, 5, 3, 10, 101, 0, 0, reg8)
 i <-5492
 run_vm()
 ```
-Note that the stack is set to the starting stack (before the mechanism) minus 5491 as this one is removed as the last step of the mechanism. In the *registers* just *reg1* and *reg2* are changed to the output of the mechanism. When you run the whole [script](https://github.com/zapateros/Synacor-Challenge/blob/master/R/chapter_7.R), you earn the seventh code! (7/8)
+Note that the stack is set to the starting stack (before the mechanism) minus 5491 as this one is removed as the last step of the mechanism. In the *registers* just *reg1* and *reg2* are changed to the output of the mechanism. This is why I noted that register 3 to 8 and *lbe* do not change during the mechanism. In other words: after the mechanism they are exactly the same as before. When you run the whole [script](https://github.com/zapateros/Synacor-Challenge/blob/master/R/chapter_7.R), you earn the seventh code! (7/8)
 
 
 ## Chapter 8:
-To earn the last code you have to continue the text-based game again. The steps you have to follow to find the last puzzle are:
+To earn the last code you have to lower your heart rate again and continue the text-based game. The steps you have to follow to find the last puzzle are:
 ```R
 c("west", "north", "north", "north", "north", "north", "north", "north", "east", "take journal",
            "west", "north", "north", "take orb")
 ```
-At this point you're in possession of a journal, which you can open with ``` set_mode("manual") ``` and ``` go("look journal")```. This journal contains a couple of hints to solve the puzzle but in my opinion it was pretty straightforward. You are standing in a room, which is part of a 4x4 grid of rooms. You have an orb in your hand and the number 22 is carved on the orb's pedestal. If you walk through the rooms you'll find either a number or a minus-, plus- or a multiplication-sign. When you walk through the rooms you'll add or remove weight of the orb, according to your taken path. On the topright corner of the grid there is a door where you'll find the number 30 carved into it. So the objective of this puzzle is to walk through the grid, starting with a weight of 22 and end up at the door with a weight of 30. The grid is given below:
+At this point you're in possession of a journal, which you can open with ``` set_mode("manual") ``` and ``` go("look journal")```. This journal contains a couple of hints to solve the puzzle but in my opinion it was pretty straightforward. You are standing in a room, which is part of a 4x4 grid of rooms. You have an orb in your hand and the number 22 is carved on the orb's pedestal. If you walk through the rooms you'll find either a number or a minus-, plus- or a multiplication-sign. So while walking through the rooms you'll add or remove weight of the orb, according to your taken path. On the topright corner of the grid there is a door where you'll find the number 30 carved into it. So the objective of this puzzle is to walk through the grid, starting with a weight of 22 and end up at the door with a weight of 30. The grid is given below:
 
-![alt text](https://github.com/zapateros/Synacor-Challenge/blob/master/R/other/img/grid_chapter_8.PNG "grid chapter eight")
+![alt text](https://github.com/zapateros/Synacor-Challenge/blob/master/R/images/grid_chapter_8.PNG "grid chapter eight")
 
 You start at the bottom left (green) and should end up at the top right (red). Obviously there are an infinite amount of paths you could take but the door only opens when you take the shortest path. There are two ways to solve this puzzle:
 
@@ -359,4 +359,4 @@ To choose the right method, I first tried some paths by hand. I quickly solved i
 ```R
 c("north", "east", "east", "north", "west", "south", "east", "east", "west", "north", "north", "east")
 ```
-The vaultdoor can be opened now and there you'll find a large pile of treasure and a mirror. Take the mirror and use it. Now you'll see the last code. The only thing left to do is to mirror the given code and fill it in at the website. You are done (8/8)! See the [script](https://github.com/zapateros/Synacor-Challenge/blob/master/R/chapter_8.R)
+The vault door can be opened now and there you'll find a large pile of treasure and a mirror. Take the mirror and use it. Now you'll see the last code. The only thing left to do is to mirror the given code and fill it in at the website. You are done (8/8)! See the [script](https://github.com/zapateros/Synacor-Challenge/blob/master/R/chapter_8.R)
