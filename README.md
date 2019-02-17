@@ -340,7 +340,7 @@ run_vm()
 Note that the stack is set to the starting stack (before the mechanism) minus 5491 as this one is removed as the last step of the mechanism. In the *registers* just *reg1* and *reg2* are changed to the output of the mechanism. This is why I noted that register 3 to 8 and *lbe* do not change during the mechanism. In other words: after the mechanism they are exactly the same as before. When you run the whole [script](https://github.com/zapateros/Synacor-Challenge/blob/master/R/chapter_7.R), you earn the seventh code! (7/8)
 
 
-## Chapter 8:
+## Chapter 8: An orb and a grid
 To earn the last code you have to lower your heart rate again and continue the text-based game. The steps you have to follow to find the last puzzle are:
 ```R
 c("west", "north", "north", "north", "north", "north", "north", "north", "east", "take journal",
