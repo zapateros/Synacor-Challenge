@@ -288,7 +288,7 @@ x   <- reg8
 d_0 <- reg8
 mdl <- 32768
 d_1    <- (x + sum((x + 1)^(2:(d_0 + 2))) %% mdl
-result <- (x + sum((x + 1)^(2:(d_1 + 2))) %% mdl
+result <- (x - 1 + sum((x + 1)^(2:(d_1 + 2))) %% mdl
 ```
 This is the general solution to this problem. However, standard R doesn't really work with high numbers/exponents and therefore it is sufficient to use the 'less-optimized' version. 
 </details>
