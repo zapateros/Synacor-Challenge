@@ -256,7 +256,7 @@ d = (b + f[0] + e[k]*(b + 1) + 1) %% mdl
 ```
 where e[k] is the value of *e* when *d* is zero. Luckily *c* started at one, so this method only has to run twice. At this point we have optimized the mechanism well enough to have an acceptable runtime. There is a way of 'optimizing' it even further but you can skip this part if you want; I will not use it in the rest of the manual but it might interest you.
 
-===
+---
 
 <details>
 <summary>The general solution to the confirmation mechanism</summary>
