@@ -284,7 +284,7 @@ Remember *x* is your input number *reg8*. It appears to be a summation function,
 
 ![alt text](https://github.com/zapateros/Synacor-Challenge/blob/master/images/summation_solution_ch_7.PNG "summation solution chapter seven")
 
-These summations are finite geometric series and so they can be simplified according to the following rules:
+Notice the -1 in the second formula. The reason for this substraction is because the mechanism stops before running the last iteration. These summations are finite geometric series and so they can be simplified according to the following rules:
 
 ![alt text](https://github.com/zapateros/Synacor-Challenge/blob/master/images/geometric_series.PNG "geometric series")
 
