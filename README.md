@@ -288,7 +288,7 @@ Notice the -1 in the second formula. The reason for this substraction is because
 
 ![alt text](https://github.com/zapateros/Synacor-Challenge/blob/master/images/geometric_series.PNG "geometric series")
 
-And so the general solution to this problem is:
+And so the general solution to the confirmation mechanism is:
 
 ![alt text](https://github.com/zapateros/Synacor-Challenge/blob/master/images/geometric_solution_ch_7.PNG "geometric solution chapter seven")
 
@@ -300,12 +300,12 @@ d_1    <- (x + ((x+1)^(d0+3)-(x+1)^2)/x) %% mdl
 result <- (x - 1 + ((x+1)^(d1+3)-(x+1)^2)/x) %% mdl
 ```
 
-The problem with this solution is that standard R doesn't really work with high numbers/exponents and therefore it is sufficient to use the 'less-optimized' version. 
+The problem with this solution is that standard R (or any language) doesn't really work with high numbers/exponents and therefore it is sufficient to use the 'less-optimized' version. However, I'm sure there are some tricks to bring the exponents down to workable numbers but I'm leaving that up to you. 
 </details>
 
 ---
 
-Let's walk through the script that is able to run the mechanism quickly. First a little recap, because I can imagine you lost track a bit. The confirmation mechanism is a method that loops through several Opcodes to imitate the Ackermann function. In this case this means that the stack is filled with ones, twos and threes (and one four). The confirmation mechanism finally ends when all these numbers are removed from the stack again. The amount of ones, twos and threes the stack initially fills up with, is depending on your input *register 8*. The removal process of these numbers is very time consuming and therefore it is necessary to decode and optimize it. Luckily most of the loops can be replaced with some relatively simple general formulas (if you understand the mechanism). A small note: it is even possible to replace all the loops but you'll end up with a summation function with high exponents, which in its turn is not efficient in R. Also, instead of working with an object that is filled with numbers (the stack), I isolated the problem by creating six variables *a,b,c,d,e* and *f*, which represent *reg1*, *reg2* and the amount of fours, threes, twos and ones in the stack respectively. 
+Let's walk through the script that is able to run the mechanism quickly. First a little recap, because I can imagine you lost track a bit. The confirmation mechanism is a method that loops through several Opcodes to imitate the Ackermann function. In this case this means that the stack is filled with ones, twos and threes (and one four). The confirmation mechanism finally ends when all these numbers are removed from the stack again. The amount of ones, twos and threes the stack initially fills up with, is depending on your input *register 8*. The removal process of these numbers is very time consuming and therefore it is necessary to decode and optimize it. Luckily most of the loops can be replaced with some relatively simple general formulas (if you understand the mechanism). A small note: it is even possible to replace all the loops but you'll end up with a functions with high exponents, which in its turn is not efficient in R. Also, instead of working with an object that is filled with numbers (the stack), I isolated the problem by creating six variables *a,b,c,d,e* and *f*, which represent *reg1*, *reg2* and the amount of fours, threes, twos and ones in the stack respectively. 
 
 Like said, the starting point is when *b,d,e* and *f* are set to your input *reg8*, which is still 20,000 in the example. Every time *d* decreases by one, the new starting point of *e* is given by (like stated earlier):
 
