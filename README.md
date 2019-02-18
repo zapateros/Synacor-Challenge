@@ -280,18 +280,27 @@ e[3] = ((x + 1)^4 + (x + 1)^3 + (x + 1)^2 + x) %% mdl
 
 e[n] = ((x + 1)^(n+1) + (x + 1)^n + .. + (x + 1)^2 + x) %% mdl   
 ```
-Remember *x* is your input number *reg8*. It appears to be a summation function, which completely removes the for-loops. However, you are not there yet. Just like with our previous optimizations, when you run the function *d* + 1 times, you calculate the next starting *d*. After that, you run the function again (the new) *d* times. At that point it is equivalent to when *c,d e* and *f* are zero and therefore the mechanism ends. Let's see it in formula- and script-form:
+Remember *x* is your input number *reg8*. It appears to be a summation function, which completely removes the for-loops. However, you are not there yet. Just like with our previous optimizations, when you run the function *d* + 1 times, you calculate the next starting *d*. After that, you run the function again (the new) *d* times. At that point it is equivalent to when *c,d e* and *f* are zero and therefore the mechanism ends. Let's see it in formula-form:
 
-![alt text](https://github.com/zapateros/Synacor-Challenge/blob/master/images/summation_solution_ch_7.PNG "solution chapter seven")
+![alt text](https://github.com/zapateros/Synacor-Challenge/blob/master/images/summation_solution_ch_7.PNG "summation solution chapter seven")
+
+These summations are finite geometric series and so they can be simplified according to the following rules:
+
+![alt text](https://github.com/zapateros/Synacor-Challenge/blob/master/images/geometric_series.PNG "geometric series")
+
+And so the general solution to this problem is:
+
+![alt text](https://github.com/zapateros/Synacor-Challenge/blob/master/images/geometric_solution_ch_7.PNG "geometric solution chapter seven")
 
 ```R
 x   <- reg8
 d_0 <- reg8
 mdl <- 32768
-d_1    <- (x + sum((x + 1)^(2:(d_0 + 2))) %% mdl
-result <- (x - 1 + sum((x + 1)^(2:(d_1 + 2))) %% mdl
+d_1    <- (x + ((x+1)^(d0+3)-(x+1)^2)/x) %% mdl
+result <- (x - 1 + ((x+1)^(d1+3)-(x+1)^2)/x) %% mdl
 ```
-This is the general solution to this problem. However, standard R doesn't really work with high numbers/exponents and therefore it is sufficient to use the 'less-optimized' version. 
+
+The problem with this solution is that standard R doesn't really work with high numbers/exponents and therefore it is sufficient to use the 'less-optimized' version. 
 </details>
 
 ---
