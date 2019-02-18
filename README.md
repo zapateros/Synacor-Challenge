@@ -261,6 +261,7 @@ where e[k] is the value of *e* when *d* is zero. Luckily *c* started at one, so 
 <details>
 <summary>The general solution to the confirmation mechanism</summary>
 <br>
+  
 I'm making use of the fact that *b, d, e* and *f* all start at the same value of *reg8*; let's call it *x* for a shorter notation:
 
 ```R
