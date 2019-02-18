@@ -154,7 +154,7 @@ out <- function(){
 }
 
 # 20. Opcode 20 is added in the next chapter
-opin <- function(){
+go <- function(){
   
 } 
 
@@ -165,7 +165,7 @@ noop <- function(){
 
 # Add all functions to a list to call the relevant one from run_vm function
 op_functions <- c(set, push, pop, eq, gt, jmp, jt, jf, add, mult, mod, and, or, not, 
-                  rmem, wmem, call, ret, out, opin, noop)
+                  rmem, wmem, call, ret, out, go, noop)
 
 
 # 3. FUNCTIONS
