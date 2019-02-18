@@ -86,7 +86,7 @@ go <- function(input){
   run_vm()
 }
 ```
-Basically what you are doing is call Opcode 20 manually, with your choice as the input. The function splits your input (string) and loops through the separate characters. Every character is converted to its decimal ascii code and the virtual machine is started again. To find the next code is very simple. Just pick the tablet up and open it with the following commands:
+Basically what you are doing is call Opcode 20 manually, with your choice as the input. The function splits your input (string) and loops through the separate characters. Every character is converted to its decimal ascii code and the virtual machine is started again. To find the next code is very simple. Just pick up the tablet and open it with the following commands:
 - *go("take tablet")*
 - *go("use tablet")*
 
