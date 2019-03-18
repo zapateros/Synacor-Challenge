@@ -125,7 +125,7 @@ And lastly, north of the formula-room, there is a door with 5 slots where you ca
 I use a simple pragmatic method to find the solution to the formula with the given values. I just brute force every possible combination:
 ```R
 possible_values <- expand.grid(rep(list(c(2, 3, 5, 7, 9)), 5))
-uniq_rows       <- sapply(c(1:nrow(pos_vals)),function(x){!any(duplicated(unlist(possible_values[x,])))})
+uniq_rows       <- sapply(c(1:nrow(possible_values)),function(x){!any(duplicated(unlist(possible_values[x,])))})
 pc              <- possible_values[uniq_rows,]
 func_res        <- pc[, 1] + pc[, 2] * pc[, 3] ^ 2 + pc[, 4] ^ 3 - pc[, 5] == 399
 pc[func_res,]
